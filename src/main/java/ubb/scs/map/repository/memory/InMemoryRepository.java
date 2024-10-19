@@ -89,4 +89,12 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
         }
         return entity;
     }
+
+    /**
+     *
+     * @return the map with the entities
+     */
+    public Map<ID, E> getEntities() {
+        return entities;
+    }
 }

@@ -1,13 +1,10 @@
 package ubb.scs.map.repository.file;
 
 import ubb.scs.map.domain.Entity;
-import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.domain.validators.Validator;
-import ubb.scs.map.repository.Repository;
 import ubb.scs.map.repository.memory.InMemoryRepository;
 
 import java.io.*;
-import java.nio.Buffer;
 
 public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends InMemoryRepository<ID, E>{
     private String filename;
@@ -19,7 +16,18 @@ public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends I
     }
 
 
+    /**
+     *
+     * @param line refers the entity in its string form; its components are separated by a special character
+     * @return the entity as an object
+     */
     public abstract E createEntity(String line); // template method -> sablonul folosit aici; la fel ca la sortare -> comparatorul difera
+
+    /**
+     *
+     * @param entity refers an object from the entities
+     * @return the entity in its string form; its components are separated by a special character
+     */
     public abstract String saveEntity(E entity);
     /*
     nu are rost sa le mai suprascriem
@@ -76,8 +84,6 @@ public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends I
                 E entity = createEntity(line);
                 super.save(entity);
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

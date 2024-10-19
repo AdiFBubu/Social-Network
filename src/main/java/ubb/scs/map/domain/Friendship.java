@@ -3,7 +3,7 @@ package ubb.scs.map.domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Friendship extends Entity<Tuple<Utilizator, Utilizator>> {
+public class Friendship extends Entity<Tuple<Long, Long>> {
     private final LocalDateTime date = LocalDateTime.now();
 
     public LocalDateTime getDate() {
@@ -20,6 +20,7 @@ public class Friendship extends Entity<Tuple<Utilizator, Utilizator>> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return getId().hashCode();
     }
+
 }

@@ -1,5 +1,9 @@
 package ubb.scs.map.domain.validators;
 
 public interface Validator<T> {
-    void validate(T entity) throws ValidationException;
+    /**
+     *
+     * @param entity refers the entity that will be validated
+     */
+    void validate(T entity);
 }

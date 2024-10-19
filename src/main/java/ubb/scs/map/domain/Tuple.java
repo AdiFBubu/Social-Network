@@ -11,9 +11,18 @@ public class Tuple<E1, E2> {
         this.e2 = e2;
     }
 
+    /**
+     *
+     * @return the first entity of the tuple
+     */
     public E1 getE1() {
         return e1;
     }
+
+    /**
+     *
+     * @return the second entity of the tuple
+     */
     public E2 getE2() {
         return e2;
     }
@@ -28,6 +37,6 @@ public class Tuple<E1, E2> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(e1, e2);
+        return e1.hashCode() + e2.hashCode();
     }
 }

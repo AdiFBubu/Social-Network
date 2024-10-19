@@ -6,6 +6,11 @@ public class Entity<ID>  {
     public ID getId() {
         return id;
     }
+
+    /**
+     *
+     * @param id it will be set to the current Entity
+     */
     public void setId(ID id) {
         this.id = id;
     }
