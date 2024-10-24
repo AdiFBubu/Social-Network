@@ -1,21 +1,18 @@
 package ubb.scs.map.service;
 
-import ubb.scs.map.domain.Friendship;
-import ubb.scs.map.domain.Tuple;
 import ubb.scs.map.domain.User;
 import ubb.scs.map.repository.file.FriendshipRepository;
 import ubb.scs.map.repository.file.UserRepository;
 import ubb.scs.map.utils.dfs;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-public class FriendshipAnalyzer {
+public class SocialNetwork {
 
     private UserRepository userRepository;
     private FriendshipRepository friendshipRepository;
 
-    public FriendshipAnalyzer(UserRepository userRepository, FriendshipRepository friendshipRepository) {
+    public SocialNetwork(UserRepository userRepository, FriendshipRepository friendshipRepository) {
         this.userRepository = userRepository;
         this.friendshipRepository = friendshipRepository;
     }

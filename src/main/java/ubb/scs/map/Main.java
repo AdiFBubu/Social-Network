@@ -5,10 +5,9 @@ import ubb.scs.map.domain.Tuple;
 import ubb.scs.map.domain.User;
 import ubb.scs.map.domain.validators.FriendshipValidator;
 import ubb.scs.map.domain.validators.UserValidator;
-import ubb.scs.map.repository.Repository;
 import ubb.scs.map.repository.file.FriendshipRepository;
 import ubb.scs.map.repository.file.UserRepository;
-import ubb.scs.map.service.FriendshipAnalyzer;
+import ubb.scs.map.service.SocialNetwork;
 
 import java.util.Scanner;
 
@@ -96,8 +95,10 @@ public class Main {
                     var u = userRepo.delete(userID);
                     if (u == null)
                         System.out.println("User not found!");
-                    else
+                    else {
+                        friendshipRepo.verifyUsers();
                         System.out.println("Successfully deleted user!");
+                    }
                 }
                 catch (Exception e) {
                     System.out.println(e.getMessage());
@@ -166,7 +167,7 @@ public class Main {
                 }
             }
             else if (cmd == 5){
-                FriendshipAnalyzer f = new FriendshipAnalyzer(userRepo, friendshipRepo);
+                SocialNetwork f = new SocialNetwork(userRepo, friendshipRepo);
                 var rez = f.getCommunities();
                 System.out.println("There are " + rez.size() + " communities");
                 int nr = 1;
@@ -179,7 +180,7 @@ public class Main {
                 }
             }
             else if (cmd == 6) {
-                FriendshipAnalyzer f = new FriendshipAnalyzer(userRepo, friendshipRepo);
+                SocialNetwork f = new SocialNetwork(userRepo, friendshipRepo);
                 var rez = f.MostSociableCommunity();
                 System.out.println("The most sociable community is: ");
                 for (var el : rez) {

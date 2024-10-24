@@ -63,7 +63,7 @@ public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends I
     } catch() {}
      */
 
-    private void writeToFile() {
+    protected void writeToFile() {
 
         try  ( BufferedWriter writer = new BufferedWriter(new FileWriter(filename))){
             for (E entity: entities.values()) {

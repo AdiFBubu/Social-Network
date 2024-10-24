@@ -36,4 +36,11 @@ public class FriendshipRepository extends AbstractFileRepository<Tuple<Long, Lon
         }
         return super.save(entity);
     }
+
+    public void verifyUsers() {
+        var userList = userRepository.getEntities().keySet();
+        entities.keySet().removeIf(id-> !userList.contains(id.getE1())  || !userList.contains(id.getE2()));
+        super.writeToFile();
+    }
+
 }
