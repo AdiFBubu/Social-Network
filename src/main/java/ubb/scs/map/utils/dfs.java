@@ -28,8 +28,7 @@ public class dfs {
             var u2 = u.get(el.getId().getE2());
             if (relations.get(u1) == null)
                 relations.put(u1, new ArrayList<>());
-            if (relations.get(u2) == null)
-                relations.put(u2, new ArrayList<>());
+            relations.computeIfAbsent(u2, k -> new ArrayList<>());
             relations.get(u1).add(u2);
             relations.get(u2).add(u1);
         }

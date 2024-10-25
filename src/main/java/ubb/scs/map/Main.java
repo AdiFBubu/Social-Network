@@ -35,7 +35,8 @@ public class Main {
     public static void main(String[] args) {
 
         UserRepository userRepo = new UserRepository(new UserValidator(), "./data/users.txt");
-        FriendshipRepository friendshipRepo = new FriendshipRepository(userRepo, new FriendshipValidator(), "./data/friendships.txt");
+        FriendshipRepository friendshipRepo = new FriendshipRepository(new FriendshipValidator(userRepo), "./data/friendships.txt");
+        SocialNetwork service = new SocialNetwork(userRepo, friendshipRepo);
         long id;
         if (userRepo.getEntities().isEmpty())
             id = 1L;
@@ -70,7 +71,7 @@ public class Main {
                 user.setId(id);
                 id ++;
                 try {
-                    var u = userRepo.save(user);
+                    var u = service.save(user);
                     if (u != null)
                         System.out.println("User is already added!");
                     else
@@ -92,11 +93,10 @@ public class Main {
                 }
                 User user = userRepo.findOne(userID);
                 try{
-                    var u = userRepo.delete(userID);
+                    var u = service.delete(userID);
                     if (u == null)
                         System.out.println("User not found!");
                     else {
-                        friendshipRepo.verifyUsers();
                         System.out.println("Successfully deleted user!");
                     }
                 }
@@ -126,7 +126,7 @@ public class Main {
                 Friendship f = new Friendship();
                 f.setId(new Tuple<>(user1ID, user2ID));
                 try {
-                    var u = friendshipRepo.save(f);
+                    var u = service.save(f);
                     if (u != null)
                         System.out.println("Friendship is already added!");
                     else
@@ -156,7 +156,7 @@ public class Main {
                     continue;
                 }
                 try {
-                    var u = friendshipRepo.delete(new Tuple<>(user1ID, user2ID));
+                    var u = service.delete(new Tuple<>(user1ID, user2ID));
                     if (u == null)
                         System.out.println("Friendship not found!");
                     else
@@ -167,8 +167,7 @@ public class Main {
                 }
             }
             else if (cmd == 5){
-                SocialNetwork f = new SocialNetwork(userRepo, friendshipRepo);
-                var rez = f.getCommunities();
+                var rez = service.getCommunities();
                 System.out.println("There are " + rez.size() + " communities");
                 int nr = 1;
                 for (var c : rez) {
@@ -180,8 +179,7 @@ public class Main {
                 }
             }
             else if (cmd == 6) {
-                SocialNetwork f = new SocialNetwork(userRepo, friendshipRepo);
-                var rez = f.MostSociableCommunity();
+                var rez = service.MostSociableCommunity();
                 System.out.println("The most sociable community is: ");
                 for (var el : rez) {
                     System.out.println(el);

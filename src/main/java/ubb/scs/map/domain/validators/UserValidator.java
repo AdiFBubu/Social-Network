@@ -7,7 +7,7 @@ public class UserValidator implements Validator<User> {
     @Override
     public void validate(User entity) {
         //TODO: implement method validate
-        if(entity.getFirstName().equals(""))
+        if(entity.getFirstName().isEmpty())
             throw new ValidationException("First name invalid!");
         if (entity.getLastName().equals(""))
             throw new ValidationException("Last name invalid!");

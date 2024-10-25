@@ -9,10 +9,8 @@ import ubb.scs.map.repository.memory.InMemoryRepository;
 
 public class FriendshipRepository extends AbstractFileRepository<Tuple<Long, Long>, Friendship> {
 
-    private final UserRepository userRepository;
-    public FriendshipRepository(UserRepository userRepository, Validator<Friendship> validator, String path) {
+    public FriendshipRepository(Validator<Friendship> validator, String path) {
         super(validator, path);
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -26,21 +24,6 @@ public class FriendshipRepository extends AbstractFileRepository<Tuple<Long, Lon
     @Override
     public String saveEntity(Friendship entity) {
         return entity.getId().getE1() + "-" + entity.getId().getE2();
-    }
-
-    @Override
-    public Friendship save(Friendship entity) {
-        if (userRepository.getEntities().get(entity.getId().getE1()) == null ||
-        userRepository.getEntities().get(entity.getId().getE2()) == null) {
-            throw new ValidationException("User not found");
-        }
-        return super.save(entity);
-    }
-
-    public void verifyUsers() {
-        var userList = userRepository.getEntities().keySet();
-        entities.keySet().removeIf(id-> !userList.contains(id.getE1())  || !userList.contains(id.getE2()));
-        super.writeToFile();
     }
 
 }
