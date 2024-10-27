@@ -5,6 +5,7 @@ import ubb.scs.map.domain.validators.Validator;
 import ubb.scs.map.repository.memory.InMemoryRepository;
 
 import java.io.*;
+import java.util.Optional;
 
 public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends InMemoryRepository<ID, E>{
     private String filename;
@@ -44,9 +45,9 @@ public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends I
      */
 
     @Override
-    public E save(E entity) {
-        E e = super.save(entity);
-        if (e == null)
+    public Optional<E> save(E entity) {
+        Optional<E> e = super.save(entity);
+        if (e.isEmpty())
             writeToFile();
         return e;
     }
@@ -77,10 +78,6 @@ public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends I
 
     }
 
-    public void refreshFile() {
-        writeToFile();
-    }
-
     private void loadData() {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -94,16 +91,16 @@ public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends I
     }
 
     @Override
-    public E delete(ID id) {
-        E entity = super.delete(id);
-        if (entity != null) writeToFile();
+    public Optional<E> delete(ID id) {
+        Optional<E> entity = super.delete(id);
+        if (entity.isPresent()) writeToFile();
         return entity;
     }
 
     @Override
-    public E update(E entity) {
-        E entity2 = super.update(entity);
-        if (entity2 == null) writeToFile();
+    public Optional<E> update(E entity) {
+        Optional<E> entity2 = super.update(entity);
+        if (entity2.isEmpty()) writeToFile();
         return entity2;
     }
 }

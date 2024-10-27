@@ -4,7 +4,11 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Friendship extends Entity<Tuple<Long, Long>> {
-    private final LocalDateTime date = LocalDateTime.now();
+    private LocalDateTime date = LocalDateTime.now();
+
+    public void setDate (LocalDateTime date) {
+        this.date = date;
+    }
 
     public LocalDateTime getDate() {
         return date;

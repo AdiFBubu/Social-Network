@@ -1,5 +1,6 @@
 package ubb.scs.map.domain.validators;
 
+@FunctionalInterface
 public interface Validator<T> {
     /**
      *

@@ -8,10 +8,11 @@ import ubb.scs.map.repository.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<ID,E> {
 
-    private Validator<E> validator;
+    private final Validator<E> validator;
     protected Map<ID,E> entities;
 
     public InMemoryRepository(Validator<E> validator) {
@@ -20,19 +21,17 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
     }
 
     /**
-     *
      * @param id -the id of the entity to be returned
      *           id must not be null
      * @return the entity with the specified id
-     *          or null - if there is no entity with the given id
-     * @throws IllegalArgumentException
-     *                  if id is null.
+     * or null - if there is no entity with the given id
+     * @throws IllegalArgumentException if id is null.
      */
     @Override
-    public E findOne(ID id) {
+    public Optional<E> findOne(ID id) {
         if (id == null)
             throw new IllegalArgumentException("Entity must not be null");
-        return entities.get(id);
+        return Optional.ofNullable(entities.get(id));
     }
 
     @Override
@@ -41,7 +40,7 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
     }
 
     @Override
-    public E save(E entity) throws ValidationException {
+    public Optional<E> save(E entity) throws ValidationException {
 
         /**
          *
@@ -58,43 +57,29 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
         if(entity==null)
             throw new IllegalArgumentException("ENTITY CANNOT BE NULL");
         validator.validate(entity);
-        if(entities.containsKey(entity.getId()))
-            return entity;
-        else{
-            entities.put(entity.getId(),entity);
-            return null;
-        }
-
-
+        return Optional.ofNullable(entities.putIfAbsent(entity.getId(), entity));
     }
 
     @Override
-    public E delete(ID id) {
+    public Optional<E> delete(ID id) {
         if (id == null) {
             throw new IllegalArgumentException("ID CANNOT BE NULL");
         }
-        return entities.remove(id);
+        return Optional.ofNullable(entities.remove(id));
     }
 
     @Override
-    public E update(E entity) {
+    public Optional<E> update(E entity) {
 
         if (entity == null) {
             throw new IllegalArgumentException("ENTITY CANNOT BE NULL");
         }
         validator.validate(entity);
-        if (findOne(entity.getId()) != null) {
+        if (entities.containsKey(entity.getId())) {
             entities.put(entity.getId(),entity);
-            return null;
+            return Optional.empty();
         }
-        return entity;
+        return Optional.of(entity);
     }
 
-    /**
-     *
-     * @return the map with the entities
-     */
-    public Map<ID, E> getEntities() {
-        return entities;
-    }
 }

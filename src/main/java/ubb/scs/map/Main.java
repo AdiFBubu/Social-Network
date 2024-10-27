@@ -4,12 +4,17 @@ import ubb.scs.map.domain.Friendship;
 import ubb.scs.map.domain.Tuple;
 import ubb.scs.map.domain.User;
 import ubb.scs.map.domain.validators.FriendshipValidator;
-import ubb.scs.map.domain.validators.UserValidator;
+import ubb.scs.map.domain.validators.Validator;
+import ubb.scs.map.repository.Repository;
+import ubb.scs.map.repository.database.FriendshipDBRepository;
+import ubb.scs.map.repository.database.UserDBRepository;
 import ubb.scs.map.repository.file.FriendshipRepository;
 import ubb.scs.map.repository.file.UserRepository;
 import ubb.scs.map.service.SocialNetwork;
+import ubb.scs.map.utils.RepoOperations;
 
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
@@ -34,18 +39,35 @@ public class Main {
 
     public static void main(String[] args) {
 
-        UserRepository userRepo = new UserRepository(new UserValidator(), "./data/users.txt");
-        FriendshipRepository friendshipRepo = new FriendshipRepository(new FriendshipValidator(userRepo), "./data/friendships.txt");
+        String username = "postgres";
+        String password = "postgres";
+        String url = "jdbc:postgresql://localhost:3491/SocialNetwork";
+
+        Validator<User> userValidator = ubb.scs.map.domain.validators.UserValidator::validate;
+        //UserRepository userRepo = new UserRepository(new UserValidator(), "./data/users.txt");
+        //Repository<Long, User> userRepo = new UserRepository(userValidator, "./data/users.txt");
+        Repository<Long, User> userRepo = new UserDBRepository(url, username, password, userValidator);
+        FriendshipValidator friendshipValidator = new FriendshipValidator(userRepo);
+        //FriendshipRepository friendshipRepo = new FriendshipRepository(new FriendshipValidator(userRepo), "./data/friendships.txt");
+        //Repository<Tuple<Long, Long>, Friendship> friendshipRepo = new FriendshipRepository(friendshipValidator::validate, "./data/friendships.txt");
+        Repository<Tuple<Long, Long>, Friendship> friendshipRepo = new FriendshipDBRepository(friendshipValidator::validate, url, username, password);
         SocialNetwork service = new SocialNetwork(userRepo, friendshipRepo);
-        long id;
-        if (userRepo.getEntities().isEmpty())
-            id = 1L;
-        else {
-            id = -1L;
-            for (User u : userRepo.findAll())
-                id = Math.max(id, u.getId());
-            id += 1;
-        }
+        RepoOperations<Long, User> userOperations = new RepoOperations<>(userRepo);
+//        long id;
+//        if (userOperations.getEntities().isEmpty())
+//            id = 1L;
+//        else {
+//
+//            /*
+//            id = -1L;
+//            for (var el : userRepo.findAll())
+//                id = Math.max(id, el.getId());
+//            */
+//
+//            id = userOperations.getAllIDs().stream()
+//                    .reduce(-1L, Math::max);
+//            id += 1;
+//        }
         while (true) {
             menu();
             Scanner scanner = new Scanner(System.in);
@@ -68,11 +90,11 @@ public class Main {
                 System.out.println("Enter the user last name: ");
                 String lastName = scanner.next();
                 User user = new User(firstName, lastName);
-                user.setId(id);
-                id ++;
+//                user.setId(id);
+//                id ++;
                 try {
                     var u = service.save(user);
-                    if (u != null)
+                    if (u.isPresent())
                         System.out.println("User is already added!");
                     else
                         System.out.println("Successfully added user!");
@@ -83,7 +105,7 @@ public class Main {
             }
             else if (cmd == 2) {
                 System.out.println("Enter user id: ");
-                Long userID;
+                long userID;
                 try{
                     userID = scanner.nextLong();
                 }
@@ -91,10 +113,9 @@ public class Main {
                     System.out.println("Enter an integer!");
                     continue;
                 }
-                User user = userRepo.findOne(userID);
                 try{
                     var u = service.delete(userID);
-                    if (u == null)
+                    if (u.isEmpty())
                         System.out.println("User not found!");
                     else {
                         System.out.println("Successfully deleted user!");
@@ -127,7 +148,7 @@ public class Main {
                 f.setId(new Tuple<>(user1ID, user2ID));
                 try {
                     var u = service.save(f);
-                    if (u != null)
+                    if (u.isPresent())
                         System.out.println("Friendship is already added!");
                     else
                         System.out.println("Successfully added friendship!");
@@ -157,7 +178,7 @@ public class Main {
                 }
                 try {
                     var u = service.delete(new Tuple<>(user1ID, user2ID));
-                    if (u == null)
+                    if (u.isEmpty())
                         System.out.println("Friendship not found!");
                     else
                         System.out.println("Successfully deleted friendship!");
@@ -169,6 +190,7 @@ public class Main {
             else if (cmd == 5){
                 var rez = service.getCommunities();
                 System.out.println("There are " + rez.size() + " communities");
+                /*
                 int nr = 1;
                 for (var c : rez) {
                     System.out.println(nr);
@@ -177,19 +199,30 @@ public class Main {
                         System.out.println(el);
                     System.out.println('\n');
                 }
+                */
+                AtomicInteger nr = new AtomicInteger(1);
+                rez.forEach(c -> {
+                    System.out.println(nr.getAndIncrement());
+                    c.forEach(System.out::println);
+                    System.out.println('\n');
+                });
             }
             else if (cmd == 6) {
                 var rez = service.MostSociableCommunity();
                 System.out.println("The most sociable community is: ");
+                /*
                 for (var el : rez) {
                     System.out.println(el);
                 }
+                */
+                rez.forEach(System.out::println);
             }
 
             else
                 break;
         }
         System.out.println("Byeeee");
+
 
 
 
