@@ -3,10 +3,9 @@ package ubb.scs.map.service;
 import ubb.scs.map.domain.Friendship;
 import ubb.scs.map.domain.Tuple;
 import ubb.scs.map.domain.User;
-import ubb.scs.map.domain.validators.ValidationException;
 import ubb.scs.map.repository.file.FriendshipRepository;
 import ubb.scs.map.repository.file.UserRepository;
-import ubb.scs.map.utils.dfs;
+import ubb.scs.map.utils.Dfs;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -63,7 +62,7 @@ public class SocialNetwork {
          */
     public ArrayList<ArrayList<User>> getCommunities() {
         int nr = 0;
-        dfs util = new dfs(userRepository.getEntities(), friendshipRepository.getEntities());
+        Dfs util = new Dfs(userRepository.getEntities(), friendshipRepository.getEntities());
         return util.run();
     }
 
@@ -72,7 +71,7 @@ public class SocialNetwork {
      * @return the list of the Users that form the most sociable community
      */
     public ArrayList<User> MostSociableCommunity() {
-        dfs util = new dfs(userRepository.getEntities(), friendshipRepository.getEntities());
+        Dfs util = new Dfs(userRepository.getEntities(), friendshipRepository.getEntities());
         var list = util.run();
         ArrayList<User> rez = new ArrayList<>(list.get(0));
         for (var l : list) {

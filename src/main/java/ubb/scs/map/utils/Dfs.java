@@ -3,13 +3,11 @@ package ubb.scs.map.utils;
 import ubb.scs.map.domain.Friendship;
 import ubb.scs.map.domain.Tuple;
 import ubb.scs.map.domain.User;
-import ubb.scs.map.repository.file.UserRepository;
 
 import java.util.*;
 
-public class dfs {
-    private Map<Long, User> u;
-    private Map<Tuple<Long, Long>, Friendship> m;
+public class Dfs {
+
     private ArrayList<User> viz;
     private Map<User, List<User>> relations;
 
@@ -18,16 +16,13 @@ public class dfs {
      * @param u the map of users and their ids
      * @param m the map of friendships and their ids
      */
-    public dfs(Map<Long, User> u, Map<Tuple<Long, Long>, Friendship> m) {
-        this.u = u;
-        this.m = m;
+    public Dfs(Map<Long, User> u, Map<Tuple<Long, Long>, Friendship> m) {
         viz = new ArrayList<>();
         relations = new HashMap<>();
         for (var el : m.values()) {
             var u1 = u.get(el.getId().getE1());
             var u2 = u.get(el.getId().getE2());
-            if (relations.get(u1) == null)
-                relations.put(u1, new ArrayList<>());
+            relations.computeIfAbsent(u1, k -> new ArrayList<>());
             relations.computeIfAbsent(u2, k -> new ArrayList<>());
             relations.get(u1).add(u2);
             relations.get(u2).add(u1);
