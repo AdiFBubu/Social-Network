@@ -89,11 +89,10 @@ public class Main {
                 String firstName = scanner.next();
                 System.out.println("Enter the user last name: ");
                 String lastName = scanner.next();
-                User user = new User(firstName, lastName);
 //                user.setId(id);
 //                id ++;
                 try {
-                    var u = service.save(user);
+                    var u = service.save(firstName, lastName);
                     if (u.isPresent())
                         System.out.println("User is already added!");
                     else
@@ -104,17 +103,13 @@ public class Main {
                 }
             }
             else if (cmd == 2) {
-                System.out.println("Enter user id: ");
-                long userID;
+                scanner.nextLine();
+                System.out.println("Enter the user first name: ");
+                String firstName = scanner.next();
+                System.out.println("Enter the user last name: ");
+                String lastName = scanner.next();
                 try{
-                    userID = scanner.nextLong();
-                }
-                catch (Exception e) {
-                    System.out.println("Enter an integer!");
-                    continue;
-                }
-                try{
-                    var u = service.delete(userID);
+                    var u = service.delete(firstName, lastName);
                     if (u.isEmpty())
                         System.out.println("User not found!");
                     else {
@@ -126,28 +121,19 @@ public class Main {
                 }
             }
             else if (cmd == 3) {
-                System.out.println("Enter the first user id: ");
-                long user1ID;
-                try{
-                    user1ID = scanner.nextLong();
-                }
-                catch (Exception e) {
-                    System.out.println("Enter an integer!");
-                    continue;
-                }
-                long user2ID;
-                System.out.println("Enter the second user id: ");
-                try{
-                    user2ID = scanner.nextLong();
-                }
-                catch (Exception e) {
-                    System.out.println("Enter an integer!");
-                    continue;
-                }
-                Friendship f = new Friendship();
-                f.setId(new Tuple<>(user1ID, user2ID));
+                scanner.nextLine();
+                System.out.println("Enter the first user's first name: ");
+                String user1firstName = scanner.next();
+                System.out.println("Enter the first user's last name: ");
+                String user1lastName = scanner.next();
+
+                System.out.println("Enter the second user's first name: ");
+                String user2firstName = scanner.next();
+                System.out.println("Enter the second user's last name: ");
+                String user2lastName = scanner.next();
+
                 try {
-                    var u = service.save(f);
+                    var u = service.save(user1firstName, user1lastName, user2firstName, user2lastName);
                     if (u.isPresent())
                         System.out.println("Friendship is already added!");
                     else
@@ -158,26 +144,19 @@ public class Main {
                 }
             }
             else if (cmd == 4){
-                System.out.println("Enter the first user id: ");
-                long user1ID;
-                try{
-                    user1ID = scanner.nextLong();
-                }
-                catch (Exception e) {
-                    System.out.println("Enter an integer!");
-                    continue;
-                }
-                long user2ID;
-                System.out.println("Enter the second user id: ");
-                try{
-                    user2ID = scanner.nextLong();
-                }
-                catch (Exception e) {
-                    System.out.println("Enter an integer!");
-                    continue;
-                }
+                scanner.nextLine();
+                System.out.println("Enter the first user's first name: ");
+                String user1firstName = scanner.next();
+                System.out.println("Enter the first user's last name: ");
+                String user1lastName = scanner.next();
+
+                System.out.println("Enter the second user's first name: ");
+                String user2firstName = scanner.next();
+                System.out.println("Enter the second user's last name: ");
+                String user2lastName = scanner.next();
+
                 try {
-                    var u = service.delete(new Tuple<>(user1ID, user2ID));
+                    var u = service.delete(user1firstName, user1lastName, user2firstName, user2lastName);
                     if (u.isEmpty())
                         System.out.println("Friendship not found!");
                     else

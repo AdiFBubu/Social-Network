@@ -8,16 +8,16 @@ import java.util.stream.StreamSupport;
 
 public class RepoOperations<ID, E extends Entity<ID>> {
 
-    private Repository<ID, E> repo;
+    private final Repository<ID, E> repo;
     public RepoOperations(Repository<ID, E> repository) {
         repo = repository;
     }
 
-    public Optional<E> findById(ID id) {
-        return StreamSupport.stream(repo.findAll().spliterator(), false)
-                .filter(e -> e.getId().equals(id))
-                .findFirst();
-    }
+//    public Optional<E> findById(ID id) {
+//        return StreamSupport.stream(repo.findAll().spliterator(), false)
+//                .filter(e -> e.getId().equals(id))
+//                .findFirst();
+//    }
 
     public Set<ID> getAllIDs() {
         Set<ID> ids = new HashSet<>();
@@ -26,9 +26,9 @@ public class RepoOperations<ID, E extends Entity<ID>> {
     }
 
     public Collection<E> getAllValues() {
-        Collection<E> users = new HashSet<>();
-        repo.findAll().forEach(users::add);
-        return users;
+        Collection<E> values = new HashSet<>();
+        repo.findAll().forEach(values::add);
+        return values;
     }
 
     public Map<ID, E> getEntities() {

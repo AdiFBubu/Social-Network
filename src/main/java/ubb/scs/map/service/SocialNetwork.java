@@ -9,6 +9,10 @@ import ubb.scs.map.repository.file.UserRepository;
 import ubb.scs.map.utils.Dfs;
 import ubb.scs.map.utils.RepoOperations;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,17 +31,30 @@ public class SocialNetwork {
         friendshipOperations = new RepoOperations<>(friendshipRepository);
     }
 
+    private Optional<User> getUser(String firstName, String lastName) {
+        return userOperations.getAllValues().stream()
+                .filter(u -> u.getFirstName().equals(firstName) && u.getLastName().equals(lastName))
+                .findFirst();
+    }
 
-    public Optional<User> save(User entity) {
+
+    public Optional<User> save(String firstName, String LastName) {
+        User entity = new User(firstName, LastName);
         return userRepository.save(entity);
     }
 
-    public Optional<User> update(User entity) {
+    public Optional<User> update(String initialFirstName, String initialLastName, String firstName, String lastName) {
+        Optional<User> user = getUser(initialFirstName, initialLastName);
+        Long ID = -1L;
+        if (user.isPresent())
+            ID = user.get().getId();
+        User entity = new User(firstName, lastName);
+        entity.setId(ID);
         return userRepository.update(entity);
     }
 
-    public Optional<User> delete(Long ID) {
-        var user = userRepository.delete(ID);
+    public Optional<User> delete(String firstName, String lastName) {
+        Optional<User> user = getUser(firstName, lastName);
         if (user.isPresent()) {
             var friendshipList = friendshipOperations.getAllIDs();
             friendshipList.forEach(friendshipID -> {
@@ -46,6 +63,7 @@ public class SocialNetwork {
                 if (Objects.equals(user1ID, user.get().getId()) || Objects.equals(user2ID, user.get().getId()))
                     friendshipRepository.delete(friendshipID);
             });
+            userRepository.delete(user.get().getId());
 
             /*
             friendshipList.removeIf( friendshipID-> {
@@ -60,16 +78,50 @@ public class SocialNetwork {
         return user;
     }
 
-    public Optional<Friendship> save(Friendship entity) {
-        return friendshipRepository.save(entity);
+    public Optional<Friendship> save(String user1FirstName, String user1LastName, String user2FirstName, String user2LastName) {
+        Optional<User> user1 = getUser(user1FirstName, user1LastName);
+        Optional<User> user2 = getUser(user2FirstName, user2LastName);
+        Friendship friendship = new Friendship();
+        Long user1ID = -1L, user2ID = -1L;
+        if (user1.isPresent())
+            user1ID = user1.get().getId();
+        if (user2.isPresent())
+            user2ID = user2.get().getId();
+        friendship.setId(new Tuple<>(user1ID, user2ID));
+
+        return friendshipRepository.save(friendship);
     }
 
-    public Optional<Friendship> update(Friendship entity) {
-        return friendshipRepository.update(entity);
+    private LocalDateTime convertToLocalDateTime(String dateTimeString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        return LocalDateTime.parse(dateTimeString, formatter);
     }
 
-    public Optional<Friendship> delete(Tuple<Long, Long> ID) {
-        return friendshipRepository.delete(ID);
+    public Optional<Friendship> update(String user1FirstName, String user1LastName, String user2FirstName, String user2LastName, String dateTimeString) {
+        Optional<User> user1 = getUser(user1FirstName, user1LastName);
+        Optional<User> user2 = getUser(user2FirstName, user2LastName);
+        Long user1ID = -1L, user2ID = -1L;
+        if (user1.isPresent())
+            user1ID = user1.get().getId();
+        if (user2.isPresent())
+            user2ID = user2.get().getId();
+        Friendship friendship = new Friendship();
+        friendship.setId(new Tuple<>(user1ID, user2ID));
+        friendship.setDate(convertToLocalDateTime(dateTimeString));
+        return friendshipRepository.update(friendship);
+    }
+
+    public Optional<Friendship> delete(String user1FirstName, String user1LastName, String user2FirstName, String user2LastName) {
+        Optional<User> user1 = getUser(user1FirstName, user1LastName);
+        Optional<User> user2 = getUser(user2FirstName, user2LastName);
+        Long user1ID = -1L, user2ID = -1L;
+        if (user1.isPresent())
+            user1ID = user1.get().getId();
+        if (user2.isPresent())
+            user2ID = user2.get().getId();
+        Tuple<Long, Long> friendshipID = new Tuple<>(user1ID, user2ID);
+
+        return friendshipRepository.delete(friendshipID);
     }
 
         /**

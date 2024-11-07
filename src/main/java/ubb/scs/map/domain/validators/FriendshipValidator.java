@@ -14,15 +14,14 @@ public class FriendshipValidator {
         this.userRepository = userRepository;
     }
     public void validate(Friendship entity) {
-        RepoOperations<Long, User> userOperations = new RepoOperations<>(userRepository);
-        if (entity.getId().getE1() <= 0)
-            throw new ValidationException("E1 must be greater than 0");
-        if (entity.getId().getE2() <= 0)
-            throw new ValidationException("E2 must be greater than 0");
-        if (userOperations.findById(entity.getId().getE1()).isEmpty() ||
-                userOperations.findById(entity.getId().getE2()).isEmpty()) {
-            throw new ValidationException("User not found");
-        }
+//        if (entity.getId().getE1() <= 0)
+//            throw new ValidationException("E1 must be greater than 0");
+//        if (entity.getId().getE2() <= 0)
+//            throw new ValidationException("E2 must be greater than 0");
+        if (userRepository.findOne(entity.getId().getE1()).isEmpty())
+            throw new ValidationException("User 1 not found");
+        if (userRepository.findOne(entity.getId().getE2()).isEmpty())
+            throw new ValidationException("User 2 not found");
         if (Objects.equals(entity.getId().getE1(), entity.getId().getE2()))
             throw new ValidationException("A user cannot be friend with himself");
     }

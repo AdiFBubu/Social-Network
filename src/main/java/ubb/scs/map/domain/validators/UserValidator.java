@@ -10,7 +10,7 @@ public class UserValidator {
             throw new ValidationException("First name invalid!");
         if (entity.getLastName().isEmpty())
             throw new ValidationException("Last name invalid!");
-        if(entity.getId() == null || entity.getId() <= 0)
-            throw new ValidationException("ID invalid!");
+//        if(entity.getId() == null || entity.getId() <= 0)
+//            throw new ValidationException("ID invalid!");
     }
 }
