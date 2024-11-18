@@ -53,7 +53,7 @@ public class FriendshipDBRepository implements Repository<Tuple<Long, Long>, Fri
         Set<Friendship> friendships = new HashSet<>();
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM friendships");
-             ResultSet resultSet = statement.executeQuery();) {
+             ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 Tuple<Long, Long> id = new Tuple<>(resultSet.getLong("user1ID"), resultSet.getLong("user2ID"));
@@ -145,7 +145,7 @@ public class FriendshipDBRepository implements Repository<Tuple<Long, Long>, Fri
     public Optional<Friendship> update(Friendship entity) {
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement("UPDATE friendships SET \"LocalDateTime\" = ? WHERE (\"user1ID\" = ? AND \"user2ID\" = ?) OR (\"user1ID\" = ? AND \"user2ID\" = ?)");) {
+             PreparedStatement statement = connection.prepareStatement("UPDATE friendships SET \"LocalDateTime\" = ? WHERE (\"user1ID\" = ? AND \"user2ID\" = ?) OR (\"user1ID\" = ? AND \"user2ID\" = ?)")) {
 
             validator.validate(entity);
 

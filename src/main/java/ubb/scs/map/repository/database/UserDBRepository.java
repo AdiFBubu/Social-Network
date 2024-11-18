@@ -16,7 +16,7 @@ public class UserDBRepository implements Repository<Long, User> {
     private final String url;
     private final String username;
     private final String password;
-    private Validator<User> validator;
+    private final Validator<User> validator;
 
     public UserDBRepository(String url, String username, String password, Validator<User> validator) {
         this.validator = validator;

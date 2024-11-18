@@ -26,7 +26,7 @@ public class RepoOperations<ID, E extends Entity<ID>> {
     }
 
     public Collection<E> getAllValues() {
-        Collection<E> values = new HashSet<>();
+        Collection<E> values = new ArrayList<>();
         repo.findAll().forEach(values::add);
         return values;
     }
