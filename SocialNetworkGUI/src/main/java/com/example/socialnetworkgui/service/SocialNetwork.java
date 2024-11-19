@@ -5,6 +5,10 @@ package com.example.socialnetworkgui.service;
 import com.example.socialnetworkgui.domain.Friendship;
 import com.example.socialnetworkgui.domain.Tuple;
 import com.example.socialnetworkgui.domain.User;
+import com.example.socialnetworkgui.events.ChangeEventType;
+import com.example.socialnetworkgui.events.UserEntityChangeEvent;
+import com.example.socialnetworkgui.observer.Observable;
+import com.example.socialnetworkgui.observer.Observer;
 import com.example.socialnetworkgui.repository.Repository;
 import com.example.socialnetworkgui.utils.Dfs;
 import com.example.socialnetworkgui.utils.RepoOperations;
@@ -14,15 +18,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SocialNetwork {
+public class SocialNetwork implements Observable<UserEntityChangeEvent> {
 
     private final Repository<Long, User> userRepository;
     private final Repository<Tuple<Long, Long>, Friendship> friendshipRepository;
     private final RepoOperations<Long, User> userOperations;
     private final RepoOperations<Tuple<Long, Long>, Friendship> friendshipOperations;
+
+    private final List<Observer<UserEntityChangeEvent>> observers = new ArrayList<>();
 
     public SocialNetwork(Repository<Long, User> userRepository, Repository<Tuple<Long, Long>, Friendship> friendshipRepository) {
         this.userRepository = userRepository;
@@ -40,7 +47,12 @@ public class SocialNetwork {
 
     public Optional<User> save(String firstName, String LastName) {
         User entity = new User(firstName, LastName);
-        return userRepository.save(entity);
+        var rez = userRepository.save(entity);
+        if ( rez.isEmpty() ) {
+            UserEntityChangeEvent event = new UserEntityChangeEvent(ChangeEventType.ADD, entity);
+            notifyObservers(event);
+        }
+        return rez;
     }
 
     public Optional<User> update(String initialFirstName, String initialLastName, String firstName, String lastName) {
@@ -50,7 +62,10 @@ public class SocialNetwork {
             ID = user.get().getId();
         User entity = new User(firstName, lastName);
         entity.setId(ID);
-        return userRepository.update(entity);
+        var rez = userRepository.update(entity);
+        if ( rez.isEmpty() )
+            notifyObservers(new UserEntityChangeEvent(ChangeEventType.UPDATE, entity, user.get()));
+        return rez;
     }
 
     public Optional<User> delete(String firstName, String lastName) {
@@ -64,7 +79,8 @@ public class SocialNetwork {
                     friendshipRepository.delete(friendshipID);
             });
             userRepository.delete(user.get().getId());
-
+            UserEntityChangeEvent event = new UserEntityChangeEvent(ChangeEventType.REMOVE, user.get());
+            notifyObservers(event);
             /*
             friendshipList.removeIf( friendshipID-> {
                 var user1ID = friendshipID.getE1();
@@ -155,5 +171,20 @@ public class SocialNetwork {
          */
         return list.stream()
                 .reduce(list.get(0), (x, y) -> x.size() > y.size() ? x : y);
+    }
+
+    @Override
+    public void addObserver(Observer<UserEntityChangeEvent> observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer<UserEntityChangeEvent> observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(UserEntityChangeEvent event) {
+        observers.forEach(observer -> observer.update(event));
     }
 }

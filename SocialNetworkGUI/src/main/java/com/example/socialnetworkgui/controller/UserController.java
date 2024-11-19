@@ -1,6 +1,8 @@
 package com.example.socialnetworkgui.controller;
 
 import com.example.socialnetworkgui.domain.User;
+import com.example.socialnetworkgui.events.UserEntityChangeEvent;
+import com.example.socialnetworkgui.observer.Observer;
 import com.example.socialnetworkgui.service.SocialNetwork;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class UserController {
+public class UserController implements Observer<UserEntityChangeEvent> {
     SocialNetwork socialNetwork;
     ObservableList<User> model = FXCollections.observableArrayList();
 
@@ -35,6 +37,7 @@ public class UserController {
 
     public void setSocialNetwork(SocialNetwork socialNetwork) {
         this.socialNetwork = socialNetwork;
+        socialNetwork.addObserver(this);
         initModel();
     }
 
@@ -99,4 +102,8 @@ public class UserController {
 
     }
 
+    @Override
+    public void update(UserEntityChangeEvent event) {
+        initModel();
+    }
 }
