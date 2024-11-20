@@ -92,21 +92,25 @@ public class UserDBRepository implements Repository<Long, User> {
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statementFind = connection.prepareStatement("Select * FROM users WHERE first_name = ? AND last_name = ?");
-             PreparedStatement statementAdd = connection.prepareStatement("INSERT INTO users (first_name, last_name) VALUES (?, ?)")) {
+             PreparedStatement statementAdd = connection.prepareStatement("INSERT INTO users (first_name, last_name) VALUES (?, ?) RETURNING id")) {
 
             statementFind.setString(1, entity.getFirstName());
             statementFind.setString(2, entity.getLastName());
             ResultSet resultSetFind = statementFind.executeQuery();
             if (resultSetFind.next())
-                return Optional.of(entity);
+                return Optional.empty();
 
             validator.validate(entity);
 
             statementAdd.setString(1, entity.getFirstName());
             statementAdd.setString(2, entity.getLastName());
-            statementAdd.executeUpdate();
+            ResultSet resultSet =  statementAdd.executeQuery();
+            if (!resultSet.next())
+                return Optional.empty();
+            int generatedId = resultSet.getInt("id");
+            entity.setId((long) generatedId);
 
-            return Optional.empty();
+            return Optional.of(entity);
 
         } catch (SQLException exception) {
             throw new RuntimeException(exception);
@@ -139,7 +143,7 @@ public class UserDBRepository implements Repository<Long, User> {
     public Optional<User> update(User entity) {
 
             try (Connection connection = DriverManager.getConnection(url, username, password);
-                 PreparedStatement statement = connection.prepareStatement("UPDATE users SET \"first_name\" = ?, \"last_name\" = ? WHERE id = ?")) {
+                 PreparedStatement statement = connection.prepareStatement("UPDATE users SET \"first_name\" = ?, \"last_name\" = ? WHERE id = ? RETURNING id")) {
 
                 validator.validate(entity);
 
@@ -147,9 +151,12 @@ public class UserDBRepository implements Repository<Long, User> {
                 statement.setString(2, entity.getLastName());
                 statement.setLong(3, entity.getId());
 
-                int rez = statement.executeUpdate();
-                if (rez == 0)
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    long id = resultSet.getLong("id");
+                    entity.setId((long) id);
                     return Optional.of(entity);
+                }
                 return Optional.empty();
 
             } catch (SQLException exception) {

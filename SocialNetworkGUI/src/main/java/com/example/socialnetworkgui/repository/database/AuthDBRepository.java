@@ -72,12 +72,13 @@ public class AuthDBRepository implements Repository<Long, Account> {
     public Optional<Account> save(Account entity) {
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statementAdd = connection.prepareStatement("INSERT INTO auth (email, password) VALUES (?, ?)")) {
+             PreparedStatement statementAdd = connection.prepareStatement("INSERT INTO auth (id, email, password) VALUES (?, ?, ?)")) {
 
             validator.validate(entity);
 
-            statementAdd.setString(1, entity.getEmail());
-            statementAdd.setString(2, entity.getPassword());
+            statementAdd.setLong(1, entity.getId());
+            statementAdd.setString(2, entity.getEmail());
+            statementAdd.setString(3, entity.getPassword());
             statementAdd.executeUpdate();
 
             return Optional.empty();

@@ -37,6 +37,18 @@ public class AuthController {
 
     @FXML
     void signInHandle() {
+        String email = emailField.getText();
+        String password = passwordField.getText();
+        if (email.isEmpty() || password.isEmpty()) {
+            MessageAlert.showErrorMessage(null, "Please enter valid email address and password");
+        }
+        else {
+            Optional<Account> account = authService.getAccount(email);
+            if (account.isPresent())
+                MessageAlert.showErrorMessage(null, "There is already an account with this email address");
+            else
+                getRegistrationWindow(email, password);
+        }
 
     }
 
@@ -49,7 +61,7 @@ public class AuthController {
             if (password.equals(account.get().getPassword())) {
                 MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Authentication", "Welcome to Social Network!" );
                 window.close();
-                getMainWindow(account.get().getId());
+                getMainWindow(account.get());
             }
             else
                 MessageAlert.showErrorMessage(null, "Passwords do not match!");
@@ -58,7 +70,7 @@ public class AuthController {
             MessageAlert.showErrorMessage(null, "Email does not exist!");
     }
 
-    public void getMainWindow(Long userID) {
+    public void getMainWindow(Account account) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("../views/user-view.fxml"));
@@ -71,8 +83,10 @@ public class AuthController {
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
 
+            User user = socialNetwork.getUser(account.getId()).get();
+
             UserController controller = loader.getController();
-            controller.setSocialNetwork(socialNetwork);
+            controller.setSocialNetwork(socialNetwork, user, account);
 
             dialogStage.show();
         }
@@ -80,6 +94,32 @@ public class AuthController {
             e.printStackTrace();
         }
 
+    }
+
+    private void getRegistrationWindow(String email, String password) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("../views/edit-user-view.fxml"));
+
+            AnchorPane root = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("User Registration");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+
+            Account account = new Account(email, password);
+
+            EditUserController controller = loader.getController();
+            controller.setSocialNetwork(socialNetwork, authService, dialogStage, account, null);
+
+            dialogStage.show();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

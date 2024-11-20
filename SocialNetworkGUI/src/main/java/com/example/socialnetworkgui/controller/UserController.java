@@ -1,8 +1,10 @@
 package com.example.socialnetworkgui.controller;
 
+import com.example.socialnetworkgui.domain.Account;
 import com.example.socialnetworkgui.domain.User;
 import com.example.socialnetworkgui.events.UserEntityChangeEvent;
 import com.example.socialnetworkgui.observer.Observer;
+import com.example.socialnetworkgui.service.AuthService;
 import com.example.socialnetworkgui.service.SocialNetwork;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -25,6 +28,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class UserController implements Observer<UserEntityChangeEvent> {
+
+    Account account;
+    User user;
     SocialNetwork socialNetwork;
     ObservableList<User> model = FXCollections.observableArrayList();
 
@@ -34,10 +40,15 @@ public class UserController implements Observer<UserEntityChangeEvent> {
     TableColumn<User, String> tableColumnFirstName;
     @FXML
     TableColumn<User, String> tableColumnLastName;
+    @FXML
+    Label nameLabel;
 
-    public void setSocialNetwork(SocialNetwork socialNetwork) {
+    public void setSocialNetwork(SocialNetwork socialNetwork, User user, Account account) {
         this.socialNetwork = socialNetwork;
+        this.user = user;
+        this.account = account;
         socialNetwork.addObserver(this);
+        nameLabel.setText("Salut, " + user.getFirstName() + " " + user.getLastName() + "!");
         initModel();
     }
 
@@ -92,7 +103,7 @@ public class UserController implements Observer<UserEntityChangeEvent> {
             dialogStage.setScene(scene);
 
             EditUserController controller = loader.getController();
-            controller.setSocialNetwork(socialNetwork, dialogStage, user);
+            controller.setSocialNetwork(socialNetwork, null, dialogStage, account, user);
 
             dialogStage.show();
         }

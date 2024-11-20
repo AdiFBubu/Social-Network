@@ -6,9 +6,9 @@ public class Account extends Entity<Long> {
     private String email;
     private String password;
 
-    public Account(String password, String email) {
-        this.password = password;
+    public Account(String email, String password) {
         this.email = email;
+        this.password = password;
     }
 
     public String getEmail() {

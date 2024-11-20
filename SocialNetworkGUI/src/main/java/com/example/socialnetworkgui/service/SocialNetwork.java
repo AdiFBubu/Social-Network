@@ -48,7 +48,7 @@ public class SocialNetwork implements Observable<UserEntityChangeEvent> {
     public Optional<User> save(String firstName, String LastName) {
         User entity = new User(firstName, LastName);
         var rez = userRepository.save(entity);
-        if ( rez.isEmpty() ) {
+        if ( rez.isPresent() ) {
             UserEntityChangeEvent event = new UserEntityChangeEvent(ChangeEventType.ADD, entity);
             notifyObservers(event);
         }
@@ -63,7 +63,7 @@ public class SocialNetwork implements Observable<UserEntityChangeEvent> {
         User entity = new User(firstName, lastName);
         entity.setId(ID);
         var rez = userRepository.update(entity);
-        if ( rez.isEmpty() )
+        if ( rez.isPresent() )
             notifyObservers(new UserEntityChangeEvent(ChangeEventType.UPDATE, entity, user.get()));
         return rez;
     }
@@ -92,6 +92,10 @@ public class SocialNetwork implements Observable<UserEntityChangeEvent> {
         }
 
         return user;
+    }
+
+    public Optional<User> getUser(Long ID) {
+        return userRepository.findOne(ID);
     }
 
     public Optional<Friendship> save(String user1FirstName, String user1LastName, String user2FirstName, String user2LastName) {

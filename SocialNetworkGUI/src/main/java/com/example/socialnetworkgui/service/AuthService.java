@@ -31,8 +31,9 @@ public class AuthService {
         this.authRepository = authRepository;
     }
 
-    public Optional<Account> add(String email, String password) {
+    public Optional<Account> add(Long ID, String email, String password) {
         Account account = new Account(email, password);
+        account.setId(ID);
         return authRepository.save(account);
     }
 
