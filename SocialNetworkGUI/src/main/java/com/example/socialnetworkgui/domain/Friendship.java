@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class Friendship extends Entity<Tuple<Long, Long>> {
     private LocalDateTime date = LocalDateTime.now();
+    Boolean state = false;
 
     public void setDate (LocalDateTime date) {
         this.date = date;
@@ -13,6 +14,14 @@ public class Friendship extends Entity<Tuple<Long, Long>> {
     public LocalDateTime getDate() {
         return date;
     }
+
+    public void setState (Boolean state) {
+        this.state = state;
+    }
+    public Boolean getState() {
+        return state;
+    }
+
 
     @Override
     public boolean equals(Object o) {

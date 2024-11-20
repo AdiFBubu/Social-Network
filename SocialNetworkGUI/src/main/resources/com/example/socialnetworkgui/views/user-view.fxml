@@ -5,11 +5,11 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetworkgui.controller.UserController">
    <children>
-      <SplitPane dividerPositions="0.7638190954773869" layoutX="-1.0" layoutY="66.0" orientation="VERTICAL" prefHeight="333.0" prefWidth="600.0">
-        <items>
+      <SplitPane dividerPositions="0.5" layoutX="301.0" layoutY="24.0" prefHeight="232.0" prefWidth="311.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <TableView fx:id="tableView" prefHeight="301.0" prefWidth="600.0">
+                  <TableView fx:id="tableView" prefHeight="370.0" prefWidth="296.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
                       <TableColumn fx:id="tableColumnFirstName" prefWidth="318.0" text="First Name" />
                       <TableColumn fx:id="tableColumnLastName" minWidth="0.0" prefWidth="281.0" text="Last Name" />
@@ -20,19 +20,16 @@
                   </TableView>
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="598.0" spacing="50.0">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#handleAddUser" text="Add" />
-                        <Button mnemonicParsing="false" onAction="#handleDeleteUser" text="Delete" />
-                        <Button mnemonicParsing="false" onAction="#handleUpdateUser" text="Update" />
-                     </children>
-                  </HBox>
+                  <Button layoutX="103.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleAddFriend" text="Add Friend" />
+                  <Button layoutX="97.0" layoutY="86.0" mnemonicParsing="false" onAction="#handleDeleteFriend" text="Delete Friend" />
+                  <Button layoutX="99.0" layoutY="141.0" mnemonicParsing="false" onAction="#handleUpdateUser" text="Update User" />
+                  <Button layoutX="92.0" layoutY="193.0" mnemonicParsing="false" onAction="#handleFriendRequests" text="Friend Request" />
                </children>
             </AnchorPane>
-        </items>
+         </items>
       </SplitPane>
-      <Label fx:id = "nameLabel" layoutX="158.0" layoutY="13.0" prefHeight="36.0" prefWidth="151.0" text="Label" />
+      <Label fx:id="nameLabel" layoutX="14.0" prefHeight="32.0" prefWidth="168.0" text="Label" />
    </children>
 </AnchorPane>

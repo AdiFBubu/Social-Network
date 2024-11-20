@@ -56,9 +56,11 @@ public class FriendshipDBRepository implements Repository<Tuple<Long, Long>, Fri
             while (resultSet.next()) {
                 Tuple<Long, Long> id = new Tuple<>(resultSet.getLong("user1ID"), resultSet.getLong("user2ID"));
                 LocalDateTime localDateTime = resultSet.getTimestamp("LocalDateTime").toLocalDateTime();
+                Boolean state = resultSet.getBoolean("state");
                 Friendship friendship = new Friendship();
                 friendship.setId(id);
                 friendship.setDate(localDateTime);
+                friendship.setState(state);
                 friendships.add(friendship);
             }
             return friendships;
@@ -81,9 +83,11 @@ public class FriendshipDBRepository implements Repository<Tuple<Long, Long>, Fri
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 LocalDateTime localDateTime = resultSet.getTimestamp("LocalDateTime").toLocalDateTime();
+                Boolean state = resultSet.getBoolean("state");
                 Friendship friendship = new Friendship();
                 friendship.setId(ID);
                 friendship.setDate(localDateTime);
+                friendship.setState(state);
                 return Optional.of(friendship);
             }
             return Optional.empty();
@@ -97,16 +101,21 @@ public class FriendshipDBRepository implements Repository<Tuple<Long, Long>, Fri
     public Optional<Friendship> save(Friendship entity) {
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement("INSERT INTO friendships (\"user1ID\", \"user2ID\", \"LocalDateTime\") VALUES (?, ?, ?)");) {
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO friendships (\"user1ID\", \"user2ID\", \"LocalDateTime\", state) VALUES (?, ?, ?, ?)");) {
 
             validator.validate(entity);
+
+            Optional<Friendship> friendship = findOne(entity.getId());
+            if (friendship.isPresent())
+                return Optional.empty();
 
             statement.setLong(1, entity.getId().getE1());
             statement.setLong(2, entity.getId().getE2());
             statement.setTimestamp(3, Timestamp.valueOf(entity.getDate()));
+            statement.setBoolean(4, entity.getState());
             statement.executeUpdate();
 
-            return Optional.empty();
+            return Optional.of(entity);
 
         } catch (SQLException exception) {
             throw new RuntimeException(exception);
@@ -143,11 +152,11 @@ public class FriendshipDBRepository implements Repository<Tuple<Long, Long>, Fri
     public Optional<Friendship> update(Friendship entity) {
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement("UPDATE friendships SET \"LocalDateTime\" = ? WHERE (\"user1ID\" = ? AND \"user2ID\" = ?) OR (\"user1ID\" = ? AND \"user2ID\" = ?)")) {
+             PreparedStatement statement = connection.prepareStatement("UPDATE friendships SET state = ? WHERE (\"user1ID\" = ? AND \"user2ID\" = ?) OR (\"user1ID\" = ? AND \"user2ID\" = ?)")) {
 
             validator.validate(entity);
 
-            statement.setTimestamp(1, Timestamp.valueOf(entity.getDate().toString()));
+            statement.setBoolean(1, entity.getState());
             statement.setLong(2, entity.getId().getE1());
             statement.setLong(3, entity.getId().getE2());
             statement.setLong(4, entity.getId().getE2());
@@ -155,8 +164,8 @@ public class FriendshipDBRepository implements Repository<Tuple<Long, Long>, Fri
 
             int rez = statement.executeUpdate();
             if (rez == 0)
-                return Optional.of(entity);
-            return Optional.empty();
+                return Optional.empty();
+            return Optional.of(entity);
 
         } catch (SQLException exception) {
             throw new RuntimeException(exception);
