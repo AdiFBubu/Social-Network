@@ -84,7 +84,7 @@ public class AuthDBRepository implements Repository<Long, Account> {
             return Optional.empty();
 
         } catch (SQLException exception) {
-            throw new RuntimeException(exception);
+            throw new RuntimeException("The email address is already registered!");
         }
     }
 
@@ -128,7 +128,7 @@ public class AuthDBRepository implements Repository<Long, Account> {
             return Optional.empty();
 
         } catch (SQLException exception) {
-            throw new RuntimeException(exception);
+            throw new RuntimeException("The email address is already registered!");
         }
     }
 

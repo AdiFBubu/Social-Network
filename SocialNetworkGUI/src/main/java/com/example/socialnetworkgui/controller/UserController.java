@@ -76,28 +76,23 @@ public class UserController implements Observer<FriendshipEntityChangeEvent> {
         model.setAll(friends);
     }
 
-    public void handleAddUser(ActionEvent event) {
-        userInfoWindow(null);
-    }
+//    public void handleAddUser(ActionEvent event) {
+//        userInfoWindow(null);
+//    }
 
     public void handleUpdateUser(ActionEvent event) {
-        User user = tableView.getSelectionModel().getSelectedItem();
-        if (user != null) {
-            userInfoWindow(user);
-        }
-        else
-            MessageAlert.showErrorMessage(null, "You have to select a user!");
+        userInfoWindow(user);
     }
 
-    public void handleDeleteUser(ActionEvent event) {
-        User user = tableView.getSelectionModel().getSelectedItem();
-        if (user != null) {
-            Optional<User> deleted = socialNetwork.delete(user.getFirstName(), user.getLastName());
-            MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Delete User", "User has been removed!");
-        }
-        else
-            MessageAlert.showErrorMessage(null, "You have to select a user!");
-    }
+//    public void handleDeleteUser(ActionEvent event) {
+//        User user = tableView.getSelectionModel().getSelectedItem();
+//        if (user != null) {
+//            Optional<User> deleted = socialNetwork.delete(user.getFirstName(), user.getLastName());
+//            MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Delete User", "User has been removed!");
+//        }
+//        else
+//            MessageAlert.showErrorMessage(null, "You have to select a user!");
+//    }
 
     public void userInfoWindow(User user) {
         try {

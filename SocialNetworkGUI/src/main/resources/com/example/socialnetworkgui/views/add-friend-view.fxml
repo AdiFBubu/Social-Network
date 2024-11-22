@@ -20,9 +20,10 @@
             </TableView>
             <AnchorPane prefHeight="211.0" prefWidth="600.0">
                <children>
-                  <Button alignment="TOP_LEFT" layoutX="178.0" layoutY="-3.0" mnemonicParsing="false" onAction="#addFriend" text="Add" AnchorPane.leftAnchor="300.0" />
-                  <Button layoutX="447.0" layoutY="-4.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" AnchorPane.rightAnchor="70.0" />
-                  <TextField fx:id = "nameTextField" AnchorPane.leftAnchor="50.0" />
+                  <Button alignment="TOP_LEFT" layoutX="300.0" layoutY="-1.0" mnemonicParsing="false" onAction="#addFriend" text="Add" AnchorPane.leftAnchor="300.0" />
+                  <Button layoutX="478.8" layoutY="-1.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" AnchorPane.rightAnchor="70.0" />
+                  <TextField fx:id="nameTextField" layoutX="83.0" AnchorPane.leftAnchor="83.0" />
+                  <Label alignment="CENTER" layoutX="5.0" layoutY="3.0" prefHeight="18.0" prefWidth="80.0" text="Last Name:" AnchorPane.leftAnchor="5.0" />
                </children>
             </AnchorPane>
          </children>
