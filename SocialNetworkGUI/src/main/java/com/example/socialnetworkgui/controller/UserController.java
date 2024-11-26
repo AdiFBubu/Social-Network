@@ -3,11 +3,14 @@ package com.example.socialnetworkgui.controller;
 import com.example.socialnetworkgui.domain.Account;
 import com.example.socialnetworkgui.domain.Friendship;
 import com.example.socialnetworkgui.domain.User;
+import com.example.socialnetworkgui.events.ChangeEventType;
+import com.example.socialnetworkgui.events.EntityChangeEvent;
 import com.example.socialnetworkgui.events.FriendshipEntityChangeEvent;
 import com.example.socialnetworkgui.events.UserEntityChangeEvent;
 import com.example.socialnetworkgui.observer.Observer;
 import com.example.socialnetworkgui.service.AuthService;
 import com.example.socialnetworkgui.service.SocialNetwork;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,12 +33,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class UserController implements Observer<FriendshipEntityChangeEvent> {
+public class UserController implements Observer<EntityChangeEvent> {
 
     Account account;
     User user;
     SocialNetwork socialNetwork;
     ObservableList<User> model = FXCollections.observableArrayList();
+    Stage stage;
 
     @FXML
     TableView<User> tableView;
@@ -46,10 +50,17 @@ public class UserController implements Observer<FriendshipEntityChangeEvent> {
     @FXML
     Label nameLabel;
 
-    public void setSocialNetwork(SocialNetwork socialNetwork, User user, Account account) {
+    public void setSocialNetwork(SocialNetwork socialNetwork, User user, Account account, Stage stage) {
         this.socialNetwork = socialNetwork;
         this.user = user;
         this.account = account;
+        this.stage = stage;
+
+        stage.setOnCloseRequest(event -> {
+            // La închiderea ferestrei, dezabonați această fereastră de la observații
+            socialNetwork.removeObserver(this);
+        });
+
         socialNetwork.addObserver(this);
         nameLabel.setText("Salut, " + user.getFirstName() + " " + user.getLastName() + "!");
         initModel();
@@ -60,6 +71,16 @@ public class UserController implements Observer<FriendshipEntityChangeEvent> {
         tableColumnFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         tableColumnLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         tableView.setItems(model);
+
+        tableView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                User selectedFriend = tableView.getSelectionModel().getSelectedItem();
+                if (selectedFriend != null) {
+                    openChatWindow(selectedFriend);
+                }
+            }
+        });
+
     }
 
     private void initModel() {
@@ -119,8 +140,20 @@ public class UserController implements Observer<FriendshipEntityChangeEvent> {
     }
 
     @Override
-    public void update(FriendshipEntityChangeEvent event) {
-        initModel();
+    public void update(EntityChangeEvent event) {
+        if (event.getType() == ChangeEventType.FRIEND)
+            initModel();
+        if (event.getType() == ChangeEventType.FRIEND_REQUEST) {
+            Friendship possibleFriendhip = (Friendship) event.getData();
+            if (possibleFriendhip.getId().getE2().equals(user.getId())) {
+                Long friendID = possibleFriendhip.getId().getE1();
+                User possibleFriend = socialNetwork.getUser(friendID).get();
+                String text = "User " + possibleFriend.getFirstName() + " " + possibleFriend.getLastName() + " wants to become friends with you!";
+                //Platform.runLater(() -> {
+                DialogAlert.showNonModalDialog(stage, "Friend request", text);
+                //});
+            }
+        }
     }
 
     public void handleAddFriend(ActionEvent actionEvent) {
@@ -187,5 +220,29 @@ public class UserController implements Observer<FriendshipEntityChangeEvent> {
             e.printStackTrace();
         }
 
+    }
+
+    private void openChatWindow(User selectedFriend) {
+
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("../views/chat-view.fxml"));
+
+            AnchorPane root = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Chat with " + selectedFriend.getFirstName() + " " + selectedFriend.getLastName());
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+
+            ChatController controller = loader.getController();
+            controller.setService(socialNetwork, user, selectedFriend);
+
+            dialogStage.show();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.example.socialnetworkgui.controller;
 import com.example.socialnetworkgui.domain.Friendship;
 import com.example.socialnetworkgui.domain.FriendshipDTO;
 import com.example.socialnetworkgui.domain.User;
+import com.example.socialnetworkgui.events.EntityChangeEvent;
 import com.example.socialnetworkgui.events.FriendshipEntityChangeEvent;
 import com.example.socialnetworkgui.observer.Observer;
 import com.example.socialnetworkgui.service.SocialNetwork;
@@ -22,7 +23,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class FriendRequestsController implements Observer<FriendshipEntityChangeEvent> {
+public class FriendRequestsController implements Observer<EntityChangeEvent> {
 
     SocialNetwork socialNetwork;
     User user;
@@ -121,7 +122,7 @@ public class FriendRequestsController implements Observer<FriendshipEntityChange
     }
 
     @Override
-    public void update(FriendshipEntityChangeEvent event) {
+    public void update(EntityChangeEvent event) {
         initModel();
     }
 }

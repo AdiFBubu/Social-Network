@@ -16,12 +16,16 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AuthController {
 
     Stage window;
     AuthService authService;
     SocialNetwork socialNetwork;
+    private ExecutorService executorService;
+
 
     @FXML
     TextField emailField;
@@ -33,6 +37,7 @@ public class AuthController {
         this.authService = authService;
         this.window = window;
         this.socialNetwork = socialNetwork;
+        executorService = Executors.newFixedThreadPool(10);
     }
 
     @FXML
@@ -59,14 +64,13 @@ public class AuthController {
         Optional<Account> account = authService.getAccount(email);
         if (account.isPresent()) {
             if (password.equals(account.get().getPassword())) {
-                MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Authentication", "Welcome to Social Network!" );
-                window.close();
+                MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Authentication", "Welcome to Social Network!");
+                //window.close();
                 getMainWindow(account.get());
-            }
-            else
+
+            } else
                 MessageAlert.showErrorMessage(null, "Passwords do not match!");
-        }
-        else
+        } else
             MessageAlert.showErrorMessage(null, "Email does not exist!");
     }
 
@@ -79,15 +83,14 @@ public class AuthController {
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle("User Information");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            //dialogStage.initModality(Modality.APPLICATION_MODAL);
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
 
             User user = socialNetwork.getUser(account.getId()).get();
 
             UserController controller = loader.getController();
-            controller.setSocialNetwork(socialNetwork, user, account);
-
+            controller.setSocialNetwork(socialNetwork, user, account, dialogStage);
             dialogStage.show();
         }
         catch (IOException e) {
@@ -97,29 +100,30 @@ public class AuthController {
     }
 
     private void getRegistrationWindow(String email, String password) {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("../views/edit-user-view.fxml"));
+        executorService.execute(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("../views/edit-user-view.fxml"));
 
-            AnchorPane root = loader.load();
+                AnchorPane root = loader.load();
 
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("User Registration");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            Scene scene = new Scene(root);
-            dialogStage.setScene(scene);
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("User Registration");
+                dialogStage.initModality(Modality.APPLICATION_MODAL);
+                Scene scene = new Scene(root);
+                dialogStage.setScene(scene);
 
-            Account account = new Account(email, password);
+                Account account = new Account(email, password);
 
-            EditUserController controller = loader.getController();
-            controller.setSocialNetwork(socialNetwork, authService, dialogStage, account, null);
+                EditUserController controller = loader.getController();
+                controller.setSocialNetwork(socialNetwork, authService, dialogStage, account, null);
 
-            dialogStage.show();
+                dialogStage.show();
 
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 
