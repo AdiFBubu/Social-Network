@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -40,6 +42,8 @@ public class UserController implements Observer<EntityChangeEvent> {
     SocialNetwork socialNetwork;
     ObservableList<User> model = FXCollections.observableArrayList();
     Stage stage;
+    private ExecutorService executorService;
+
 
     @FXML
     TableView<User> tableView;
@@ -55,6 +59,7 @@ public class UserController implements Observer<EntityChangeEvent> {
         this.user = user;
         this.account = account;
         this.stage = stage;
+        executorService = Executors.newFixedThreadPool(10);
 
         stage.setOnCloseRequest(event -> {
             // La închiderea ferestrei, dezabonați această fereastră de la observații
@@ -149,9 +154,7 @@ public class UserController implements Observer<EntityChangeEvent> {
                 Long friendID = possibleFriendhip.getId().getE1();
                 User possibleFriend = socialNetwork.getUser(friendID).get();
                 String text = "User " + possibleFriend.getFirstName() + " " + possibleFriend.getLastName() + " wants to become friends with you!";
-                //Platform.runLater(() -> {
                 DialogAlert.showNonModalDialog(stage, "Friend request", text);
-                //});
             }
         }
     }
@@ -179,7 +182,7 @@ public class UserController implements Observer<EntityChangeEvent> {
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Add a friend");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            //dialogStage.initModality(Modality.APPLICATION_MODAL);
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
 
@@ -207,7 +210,7 @@ public class UserController implements Observer<EntityChangeEvent> {
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle("View your friend requests");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            //dialogStage.initModality(Modality.APPLICATION_MODAL);
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
 
@@ -223,26 +226,66 @@ public class UserController implements Observer<EntityChangeEvent> {
     }
 
     private void openChatWindow(User selectedFriend) {
+        executorService.execute(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("../views/chat-view.fxml"));
 
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("../views/chat-view.fxml"));
+                AnchorPane root = loader.load();
 
-            AnchorPane root = loader.load();
+                Platform.runLater(() -> {
+                    try {
+                        Stage dialogStage = new Stage();
+                        dialogStage.setTitle("Chat with " + selectedFriend.getFirstName() + " " + selectedFriend.getLastName());
+                        Scene scene = new Scene(root);
+                        dialogStage.setScene(scene);
 
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Chat with " + selectedFriend.getFirstName() + " " + selectedFriend.getLastName());
-            Scene scene = new Scene(root);
-            dialogStage.setScene(scene);
+                        ChatController controller = loader.getController();
+                        controller.setService(socialNetwork, user, selectedFriend);
 
-            ChatController controller = loader.getController();
-            controller.setService(socialNetwork, user, selectedFriend);
+                        dialogStage.show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+    }
 
-            dialogStage.show();
+    private void sendMultipleMessages() {
+        executorService.execute(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("../views/multiple-messages-view.fxml"));
 
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+                AnchorPane root = loader.load();
+
+                Platform.runLater(() -> {
+                    try {
+                        Stage dialogStage = new Stage();
+                        dialogStage.setTitle("Send a message to multiple friends");
+                        Scene scene = new Scene(root);
+                        dialogStage.setScene(scene);
+
+                        MultipleMessagesController controller = loader.getController();
+                        controller.setService(socialNetwork, user);
+
+                        dialogStage.show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void handleMultipleMessages(ActionEvent actionEvent) {
+        sendMultipleMessages();
     }
 }

@@ -26,6 +26,7 @@
                   <Button layoutX="97.0" layoutY="86.0" mnemonicParsing="false" onAction="#handleDeleteFriend" text="Delete Friend" />
                   <Button layoutX="99.0" layoutY="141.0" mnemonicParsing="false" onAction="#handleUpdateUser" text="Update User" />
                   <Button layoutX="92.0" layoutY="193.0" mnemonicParsing="false" onAction="#handleFriendRequests" text="Friend Request" />
+                  <Button layoutX="67.0" layoutY="243.0" mnemonicParsing="false" onAction="#handleMultipleMessages" text="Send multiple Messages" />
                </children>
             </AnchorPane>
          </items>

@@ -186,6 +186,16 @@ public class SocialNetwork implements Observable<EntityChangeEvent> {
         return rez;
     }
 
+    public Optional<Message> saveMultipleMessages(User fromUser, List<Long> toUser, LocalDateTime date ,String textMessage, Long reply) {
+        Message message = new Message(fromUser.getId(), toUser, date, textMessage, reply);
+        Optional<Message> rez = messageRepository.save(message);
+        if (rez.isPresent()) {
+            EntityChangeEvent event = new EntityChangeEvent(ChangeEventType.MESSAGE, rez.get());
+            notifyObservers(event);
+        }
+        return rez;
+    }
+
     public Optional<Message> deleteMessage(Long ID) {
         return messageRepository.delete(ID);
     }
