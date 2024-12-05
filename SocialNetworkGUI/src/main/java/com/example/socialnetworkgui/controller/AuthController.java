@@ -4,6 +4,7 @@ import com.example.socialnetworkgui.domain.Account;
 import com.example.socialnetworkgui.domain.User;
 import com.example.socialnetworkgui.service.AuthService;
 import com.example.socialnetworkgui.service.SocialNetwork;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -75,27 +76,32 @@ public class AuthController {
     }
 
     public void getMainWindow(Account account) {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("../views/user-view.fxml"));
+        executorService.execute(() -> {
 
-            AnchorPane root = loader.load();
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("../views/user-view.fxml"));
 
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("User Information");
-            //dialogStage.initModality(Modality.APPLICATION_MODAL);
-            Scene scene = new Scene(root);
-            dialogStage.setScene(scene);
+                AnchorPane root = loader.load();
 
-            User user = socialNetwork.getUser(account.getId()).get();
+                Platform.runLater(() -> {
 
-            UserController controller = loader.getController();
-            controller.setSocialNetwork(socialNetwork, user, account, dialogStage);
-            dialogStage.show();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+                    Stage dialogStage = new Stage();
+                    dialogStage.setTitle("User Information");
+                    //dialogStage.initModality(Modality.APPLICATION_MODAL);
+                    Scene scene = new Scene(root);
+                    dialogStage.setScene(scene);
+
+                    User user = socialNetwork.getUser(account.getId()).get();
+
+                    UserController controller = loader.getController();
+                    controller.setSocialNetwork(socialNetwork, user, account, dialogStage);
+                    dialogStage.show();
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
     }
 
@@ -107,18 +113,20 @@ public class AuthController {
 
                 AnchorPane root = loader.load();
 
-                Stage dialogStage = new Stage();
-                dialogStage.setTitle("User Registration");
-                dialogStage.initModality(Modality.APPLICATION_MODAL);
-                Scene scene = new Scene(root);
-                dialogStage.setScene(scene);
+                Platform.runLater(() -> {
+                    Stage dialogStage = new Stage();
+                    dialogStage.setTitle("User Registration");
+                    dialogStage.initModality(Modality.APPLICATION_MODAL);
+                    Scene scene = new Scene(root);
+                    dialogStage.setScene(scene);
 
-                Account account = new Account(email, password);
+                    Account account = new Account(email, password);
 
-                EditUserController controller = loader.getController();
-                controller.setSocialNetwork(socialNetwork, authService, dialogStage, account, null);
+                    EditUserController controller = loader.getController();
+                    controller.setSocialNetwork(socialNetwork, authService, dialogStage, account, null);
 
-                dialogStage.show();
+                    dialogStage.show();
+                });
 
             } catch (IOException e) {
                 e.printStackTrace();

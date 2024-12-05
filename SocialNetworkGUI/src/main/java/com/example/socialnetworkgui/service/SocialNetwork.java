@@ -3,18 +3,19 @@ package com.example.socialnetworkgui.service;
 
 
 import com.example.socialnetworkgui.domain.*;
+import com.example.socialnetworkgui.domain.dto.UserFilterDTO;
 import com.example.socialnetworkgui.events.ChangeEventType;
 import com.example.socialnetworkgui.events.EntityChangeEvent;
-import com.example.socialnetworkgui.events.FriendshipEntityChangeEvent;
 import com.example.socialnetworkgui.events.UserEntityChangeEvent;
 import com.example.socialnetworkgui.observer.Observable;
 import com.example.socialnetworkgui.observer.Observer;
 import com.example.socialnetworkgui.repository.Repository;
+import com.example.socialnetworkgui.repository.paging.FriendshipPagingRepository;
 import com.example.socialnetworkgui.utils.Dfs;
 import com.example.socialnetworkgui.utils.RepoOperations;
+import com.example.socialnetworkgui.utils.paging.Page;
+import com.example.socialnetworkgui.utils.paging.Pageable;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.Optional;
 public class SocialNetwork implements Observable<EntityChangeEvent> {
 
     private final Repository<Long, User> userRepository;
-    private final Repository<Tuple<Long, Long>, Friendship> friendshipRepository;
+    private final FriendshipPagingRepository friendshipRepository;
     private final RepoOperations<Long, User> userOperations;
     private final RepoOperations<Tuple<Long, Long>, Friendship> friendshipOperations;
     private final Repository<Long, Message> messageRepository;
@@ -33,7 +34,7 @@ public class SocialNetwork implements Observable<EntityChangeEvent> {
     //private final List<Observer<UserEntityChangeEvent>> userObservers = new ArrayList<>();
     private final List<Observer<EntityChangeEvent>> friendshipObserver = new ArrayList<>();
 
-    public SocialNetwork(Repository<Long, User> userRepository, Repository<Tuple<Long, Long>, Friendship> friendshipRepository, Repository<Long, Message> messageRepository) {
+    public SocialNetwork(Repository<Long, User> userRepository, FriendshipPagingRepository friendshipRepository, Repository<Long, Message> messageRepository) {
         this.userRepository = userRepository;
         this.friendshipRepository = friendshipRepository;
         userOperations = new RepoOperations<>(userRepository);
@@ -257,6 +258,15 @@ public class SocialNetwork implements Observable<EntityChangeEvent> {
     public void notifyObservers(EntityChangeEvent event) {
         friendshipObserver.forEach(observer -> observer.update(event));
     }
+
+    public Page<Friendship> findAllOnPage(Pageable pageable) {
+        return friendshipRepository.findAllOnPage(pageable);
+    }
+
+    public Page<Friendship> findAllOnPage(Pageable pageable, UserFilterDTO filter) {
+        return friendshipRepository.findAllOnPage(pageable, filter);
+    }
+
 
 //    @Override
 //    public void addObserver(Observer<UserEntityChangeEvent> observer) {

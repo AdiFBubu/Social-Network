@@ -9,7 +9,7 @@
          <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <TableView fx:id="tableView" prefHeight="370.0" prefWidth="296.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TableView fx:id="tableView" layoutY="48.0" prefHeight="273.0" prefWidth="296.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="48.0">
                     <columns>
                       <TableColumn fx:id="tableColumnFirstName" prefWidth="318.0" text="First Name" />
                       <TableColumn fx:id="tableColumnLastName" minWidth="0.0" prefWidth="281.0" text="Last Name" />
@@ -18,6 +18,13 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </TableView>
+                  <Label layoutX="46.0" layoutY="3.0" text="First name" />
+                  <Label layoutX="199.0" layoutY="3.0" text="Last name" />
+                  <TextField fx:id = "textFieldFirstName" layoutX="33.0" layoutY="21.0" prefHeight="18.0" prefWidth="82.0" />
+                  <TextField fx:id = "textFieldLastName" layoutX="178.0" layoutY="21.0" prefHeight="18.0" prefWidth="95.0" />
+                  <Button fx:id = "previousButton" onAction="#onPreviousPage" layoutX="14.0" layoutY="321.0" mnemonicParsing="false" text="Previous" />
+                  <Button fx:id = "nextButton" onAction="#onNextPage" layoutX="239.0" layoutY="321.0" mnemonicParsing="false" text="Next" />
+                  <Label fx:id = "labelPage" layoutX="136.0" layoutY="325.0" text="Label" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">

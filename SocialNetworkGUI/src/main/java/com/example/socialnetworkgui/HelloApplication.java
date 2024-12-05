@@ -10,6 +10,10 @@ import com.example.socialnetworkgui.repository.database.FriendshipDBRepository;
 import com.example.socialnetworkgui.repository.database.MessageDBRepository;
 import com.example.socialnetworkgui.repository.database.UserDBRepository;
 import com.example.socialnetworkgui.repository.file.UserRepository;
+import com.example.socialnetworkgui.repository.paging.FriendshipPagingDBRepository;
+import com.example.socialnetworkgui.repository.paging.FriendshipPagingRepository;
+import com.example.socialnetworkgui.repository.paging.UserPagingDBRepository;
+import com.example.socialnetworkgui.repository.paging.UserPagingRepository;
 import com.example.socialnetworkgui.service.AuthService;
 import com.example.socialnetworkgui.service.SocialNetwork;
 import com.example.socialnetworkgui.utils.RepoOperations;
@@ -25,6 +29,7 @@ import java.io.IOException;
 public class HelloApplication extends Application {
 
     Repository<Long, User> userRepository;
+    UserPagingRepository userPagingRepository;
     Repository<Long, Message> messageRepository;
     Repository<Long, Account> accountRepository;
     SocialNetwork socialNetwork;
@@ -39,11 +44,13 @@ public class HelloApplication extends Application {
 
         Validator<User> userValidator = UserValidator::validate;
         userRepository = new UserDBRepository(url, username, password, userValidator);
+        userPagingRepository = new UserPagingDBRepository(url, username, password, userValidator);
         Validator<Message> messageValidator = MessageValidator::validate;
         messageRepository = new MessageDBRepository(url, username, password, messageValidator);
         FriendshipValidator friendshipValidator = new FriendshipValidator(userRepository);
         Repository<Tuple<Long, Long>, Friendship> friendshipRepo = new FriendshipDBRepository(friendshipValidator::validate, url, username, password);
-        socialNetwork = new SocialNetwork(userRepository, friendshipRepo, messageRepository);
+        FriendshipPagingRepository friendshipPagingRepository = new FriendshipPagingDBRepository(url, username, password, friendshipValidator::validate);
+        socialNetwork = new SocialNetwork(userPagingRepository, friendshipPagingRepository, messageRepository);
 
         Validator<Account> accountValidator = AccountValidator::validate;
         accountRepository = new AuthDBRepository(url, username, password, accountValidator);

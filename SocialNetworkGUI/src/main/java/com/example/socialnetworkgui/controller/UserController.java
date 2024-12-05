@@ -3,6 +3,7 @@ package com.example.socialnetworkgui.controller;
 import com.example.socialnetworkgui.domain.Account;
 import com.example.socialnetworkgui.domain.Friendship;
 import com.example.socialnetworkgui.domain.User;
+import com.example.socialnetworkgui.domain.dto.UserFilterDTO;
 import com.example.socialnetworkgui.events.ChangeEventType;
 import com.example.socialnetworkgui.events.EntityChangeEvent;
 import com.example.socialnetworkgui.events.FriendshipEntityChangeEvent;
@@ -10,6 +11,8 @@ import com.example.socialnetworkgui.events.UserEntityChangeEvent;
 import com.example.socialnetworkgui.observer.Observer;
 import com.example.socialnetworkgui.service.AuthService;
 import com.example.socialnetworkgui.service.SocialNetwork;
+import com.example.socialnetworkgui.utils.paging.Page;
+import com.example.socialnetworkgui.utils.paging.Pageable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,10 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
@@ -44,7 +44,21 @@ public class UserController implements Observer<EntityChangeEvent> {
     Stage stage;
     private ExecutorService executorService;
 
+    private int pageSize = 2;
+    int currentPage = 0;
+    int totalNumberOfElements = 0;
+    private UserFilterDTO userFilter = new UserFilterDTO();
 
+    @FXML
+    public Button previousButton;
+    @FXML
+    public Button nextButton;
+    @FXML
+    public TextField textFieldFirstName;
+    @FXML
+    public TextField textFieldLastName;
+    @FXML
+    public Label labelPage;
     @FXML
     TableView<User> tableView;
     @FXML
@@ -68,7 +82,11 @@ public class UserController implements Observer<EntityChangeEvent> {
 
         socialNetwork.addObserver(this);
         nameLabel.setText("Salut, " + user.getFirstName() + " " + user.getLastName() + "!");
-        initModel();
+
+        userFilter.setIdUser(Optional.of(user.getId()));
+        userFilter.setState(Optional.of(true));
+
+        initModelPage();
     }
 
     @FXML
@@ -86,12 +104,16 @@ public class UserController implements Observer<EntityChangeEvent> {
             }
         });
 
+        textFieldFirstName.textProperty().addListener((observable, oldValue, newValue) -> handleFilter());
+        textFieldLastName.textProperty().addListener(o-> handleFilter());
+
+
     }
 
-    private void initModel() {
-        Iterable<Friendship> sth = socialNetwork.getAllFriendships();
+    private void initModelPage() {
+        Page<Friendship> page = socialNetwork.findAllOnPage(new Pageable(currentPage, pageSize), userFilter);
+        Iterable<Friendship> sth = page.getElementsOnPage();
         List<User> friends = StreamSupport.stream(sth.spliterator(), false)
-                        .filter(x -> ( Objects.equals(x.getId().getE1(), user.getId()) || Objects.equals(x.getId().getE2(), user.getId()) ) && x.getState() )
                         .map(x -> {
                             Long idFriend = x.getId().getE1();
                             if (Objects.equals(idFriend, user.getId()))
@@ -100,7 +122,46 @@ public class UserController implements Observer<EntityChangeEvent> {
                         })
                         .toList();
         model.setAll(friends);
+
+        totalNumberOfElements = page.getTotalNumberOfElements();
+
+        int totalNumberOfPages = totalNumberOfElements / pageSize;
+        if (totalNumberOfElements % pageSize != 0) totalNumberOfPages ++;
+        labelPage.setText("Page " + (currentPage + 1) + " of " + totalNumberOfPages);
+
+        previousButton.setDisable(currentPage == 0);
+        nextButton.setDisable(currentPage == totalNumberOfPages - 1);
+
     }
+
+    private void handleFilter() {
+
+        if (textFieldLastName.getText() == null)
+            userFilter.setFirstName(Optional.empty());
+        else
+            userFilter.setFirstName(Optional.of(textFieldFirstName.getText()));
+
+        if (textFieldLastName.getText() == null)
+            userFilter.setLastName(Optional.empty());
+        else
+            userFilter.setLastName(Optional.of(textFieldLastName.getText()));
+        currentPage = 0;
+        initModelPage();
+    }
+
+//    private void initModel() {
+//        Iterable<Friendship> sth = socialNetwork.getAllFriendships();
+//        List<User> friends = StreamSupport.stream(sth.spliterator(), false)
+//                        .filter(x -> ( Objects.equals(x.getId().getE1(), user.getId()) || Objects.equals(x.getId().getE2(), user.getId()) ) && x.getState() )
+//                        .map(x -> {
+//                            Long idFriend = x.getId().getE1();
+//                            if (Objects.equals(idFriend, user.getId()))
+//                                idFriend = x.getId().getE2();
+//                            return socialNetwork.getUser(idFriend).get();
+//                        })
+//                        .toList();
+//        model.setAll(friends);
+//    }
 
 //    public void handleAddUser(ActionEvent event) {
 //        userInfoWindow(null);
@@ -146,8 +207,9 @@ public class UserController implements Observer<EntityChangeEvent> {
 
     @Override
     public void update(EntityChangeEvent event) {
-        if (event.getType() == ChangeEventType.FRIEND)
-            initModel();
+        if (event.getType() == ChangeEventType.FRIEND) {
+            initModelPage();
+        }
         if (event.getType() == ChangeEventType.FRIEND_REQUEST) {
             Friendship possibleFriendhip = (Friendship) event.getData();
             if (possibleFriendhip.getId().getE2().equals(user.getId())) {
@@ -166,6 +228,7 @@ public class UserController implements Observer<EntityChangeEvent> {
     public void handleDeleteFriend(ActionEvent actionEvent) {
         User user = tableView.getSelectionModel().getSelectedItem();
         if (user != null) {
+            currentPage = 0;
             Optional<Friendship> deleted = socialNetwork.delete(this.user.getFirstName(), this.user.getLastName(), user.getFirstName(), user.getLastName());
             MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Delete Friendship", "Friendship has been removed!");
         }
@@ -287,5 +350,15 @@ public class UserController implements Observer<EntityChangeEvent> {
 
     public void handleMultipleMessages(ActionEvent actionEvent) {
         sendMultipleMessages();
+    }
+
+    public void onNextPage(ActionEvent actionEvent) {
+        currentPage ++;
+        initModelPage();
+    }
+
+    public void onPreviousPage(ActionEvent actionEvent) {
+        currentPage --;
+        initModelPage();
     }
 }
