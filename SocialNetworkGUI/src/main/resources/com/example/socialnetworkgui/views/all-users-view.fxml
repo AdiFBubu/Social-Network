@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../../../../css/all-users-view.css" fx:controller="com.example.socialnetworkgui.controller.AllUsersController">
+
+    <TableView fx:id="userTable" prefHeight="400" prefWidth="810.0">
+        <columns>
+            <TableColumn fx:id="userColumn" prefWidth="200" text="User" />
+            <TableColumn fx:id="userColumn1" prefWidth="200" text="User 1" />
+            <TableColumn fx:id="userColumn2" prefWidth="200" text="User 2" />
+            <TableColumn fx:id="userColumn3" prefWidth="200" text="User 3" />
+        </columns>
+      <columnResizePolicy>
+         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+      </columnResizePolicy>
+    </TableView>
+
+</AnchorPane>

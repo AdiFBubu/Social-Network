@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetworkgui.controller.AuthController">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../../../css/auth-view.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetworkgui.controller.AuthController">
    <children>
-      <Label layoutX="236.0" layoutY="38.0" prefHeight="46.0" prefWidth="136.0" text="Authentication">
+      <Label layoutX="236.0" layoutY="38.0" prefHeight="46.0" prefWidth="212.0" styleClass="label-authentication" text="Authentication">
          <font>
             <Font size="18.0" />
          </font></Label>
@@ -20,16 +20,16 @@
           <RowConstraints maxHeight="106.4" minHeight="10.0" prefHeight="45.199999999999996" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <TextField fx:id = "emailField" GridPane.columnIndex="1" />
-            <PasswordField fx:id = "passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="emailField" GridPane.columnIndex="1" />
+            <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label alignment="CENTER" prefHeight="18.0" prefWidth="221.0" text="email" />
             <Label alignment="CENTER" prefHeight="18.0" prefWidth="223.0" text="password" GridPane.rowIndex="1" />
          </children>
       </GridPane>
       <AnchorPane layoutY="269.0" prefHeight="97.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <Button onAction="#signInHandle" layoutX="121.0" layoutY="35.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="103.0" text="Sign in" AnchorPane.leftAnchor="121.0" />
-            <Button onAction="#loginHandle" layoutX="436.0" layoutY="36.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="103.0" text="Login" AnchorPane.rightAnchor="112.0" />
+            <Button layoutX="121.0" layoutY="35.0" mnemonicParsing="false" onAction="#signInHandle" prefHeight="26.0" prefWidth="103.0" text="Sign in" AnchorPane.leftAnchor="121.0" />
+            <Button layoutX="436.0" layoutY="36.0" mnemonicParsing="false" onAction="#loginHandle" prefHeight="26.0" prefWidth="103.0" styleClass="button-login" text="Login" AnchorPane.rightAnchor="112.0" />
          </children>
       </AnchorPane>
    </children>

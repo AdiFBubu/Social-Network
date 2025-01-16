@@ -39,6 +39,8 @@ dependencies {
   testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
   implementation 'org.postgresql:postgresql:42.5.1' // Verifică pentru ultima versiune disponibilă
+  implementation 'org.mindrot:jbcrypt:0.4'
+
 
 }
 

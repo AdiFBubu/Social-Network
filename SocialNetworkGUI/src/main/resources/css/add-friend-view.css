@@ -1,0 +1,63 @@
+/* Stil general pentru VBox */
+.vbox {
+    -fx-spacing: 10px;
+    -fx-alignment: TOP_CENTER;
+    -fx-padding: 20px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dcdcdc;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+/* Stil pentru TextField */
+.text-field {
+    -fx-pref-height: 28px;
+    -fx-font-size: 14px;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.text-field:focused {
+    -fx-border-color: #0288D1;
+    -fx-border-width: 2px;
+}
+
+/* Stil pentru Label */
+.label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-padding: 10px 0;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Stil pentru butoanele Add și Cancel */
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 20px;
+    -fx-border-color: transparent;
+    -fx-border-radius: 8px;
+}
+
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+.button:focused {
+    -fx-border-color: #0288D1;
+    -fx-border-width: 2px;
+}
+
+.button-cancel {
+    -fx-background-color: #f44336;
+}
+
+.button-cancel:hover {
+    -fx-background-color: #d32f2f;
+}

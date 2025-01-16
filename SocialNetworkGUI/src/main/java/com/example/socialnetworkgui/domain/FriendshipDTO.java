@@ -3,7 +3,7 @@ package com.example.socialnetworkgui.domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class FriendshipDTO {
+public class FriendshipDTO extends Entity<Long> {
     private String firstName;
     private String lastName;
     private LocalDateTime date;

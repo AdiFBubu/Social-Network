@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -64,12 +65,13 @@ public class AuthController {
         String password = passwordField.getText();
         Optional<Account> account = authService.getAccount(email);
         if (account.isPresent()) {
-            if (password.equals(account.get().getPassword())) {
+            if (BCrypt.checkpw(password, account.get().getPassword())) {
                 MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Authentication", "Welcome to Social Network!");
                 //window.close();
                 getMainWindow(account.get());
 
-            } else
+            }
+            else
                 MessageAlert.showErrorMessage(null, "Passwords do not match!");
         } else
             MessageAlert.showErrorMessage(null, "Email does not exist!");

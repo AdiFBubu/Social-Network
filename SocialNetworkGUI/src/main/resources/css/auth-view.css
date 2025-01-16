@@ -1,0 +1,79 @@
+/* Fundal pentru AnchorPane */
+#root {
+    -fx-background-color: linear-gradient(to bottom, #6a11cb, #2575fc); /* Gradient modern */
+    -fx-padding: 20px;
+    -fx-background-insets: 0, 0, 0;
+}
+
+/* Stil general pentru titlul autentificării */
+.label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white; /* Text alb pentru contrast */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 4, 0, 1, 1); /* Umbră */
+    -fx-alignment: CENTER;
+}
+
+/* Fundal pentru GridPane */
+.grid-pane {
+    -fx-padding: 20px;
+    -fx-hgap: 15px;
+    -fx-vgap: 15px;
+    -fx-background-color: rgba(255, 255, 255, 0.8); /* Fundal semi-transparent */
+    -fx-border-color: rgba(255, 255, 255, 0.5); /* Bordură subtilă */
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 2, 2); /* Umbră */
+}
+
+/* Etichete din GridPane */
+.grid-pane > .label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333; /* Gri închis */
+    -fx-font-weight: bold;
+}
+
+/* Stil pentru câmpurile TextField și PasswordField */
+.text-field, .password-field {
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #0288D1;
+    -fx-border-width: 2px;
+    -fx-background-color: white;
+}
+
+/* Stil pentru butoanele Sign In și Login */
+.button {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color: #4CAF50; /* Verde elegant */
+    -fx-background-radius: 20px;
+    -fx-padding: 10px 20px;
+    -fx-border-color: transparent;
+}
+
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+.button:focused {
+    -fx-border-color: #0288D1;
+    -fx-border-width: 2px;
+}
+
+/* Buton Login - diferențiat */
+.button-login {
+    -fx-background-color: #36bef4; /* Roșu elegant */
+}
+
+.button-login:hover {
+    -fx-background-color: #e53935;
+}

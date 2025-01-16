@@ -3,6 +3,7 @@ module com.example.socialnetworkgui {
     requires javafx.fxml;
     requires java.sql;
     requires jdk.sctp;
+    requires jbcrypt;
 
 
     opens com.example.socialnetworkgui to javafx.fxml;

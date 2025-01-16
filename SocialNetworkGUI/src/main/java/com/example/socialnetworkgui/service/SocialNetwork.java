@@ -72,6 +72,20 @@ public class SocialNetwork implements Observable<EntityChangeEvent> {
         return rez;
     }
 
+    public Optional<User> update(String firstName, String lastName, String imageUrl) {
+        Optional<User> user = getUser(firstName, lastName);
+        Long ID = -1L;
+        if (user.isPresent())
+            ID = user.get().getId();
+        User entity = new User(firstName, lastName);
+        entity.setId(ID);
+        entity.setImageUrl(imageUrl);
+        var rez = userRepository.update(entity);
+//        if ( rez.isPresent() )
+//            notifyObservers(new UserEntityChangeEvent(ChangeEventType.UPDATE, entity, user.get()));
+        return rez;
+    }
+
     public Optional<User> delete(String firstName, String lastName) {
         Optional<User> user = getUser(firstName, lastName);
         if (user.isPresent()) {

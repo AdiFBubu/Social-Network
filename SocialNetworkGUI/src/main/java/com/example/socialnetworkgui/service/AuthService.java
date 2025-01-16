@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+
 public class AuthService {
 
     private final Repository<Long, Account> authRepository;

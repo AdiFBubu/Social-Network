@@ -4,12 +4,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetworkgui.controller.AddFriendController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../../../../css/add-friend-view.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetworkgui.controller.AddFriendController">
    <children>
       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label text="Select a user you want to add to your friend list: " />
-            <TableView fx:id="tableView" prefHeight="494.0" prefWidth="600.0">
+            <TableView fx:id="tableView" prefHeight="437.0" prefWidth="600.0">
               <columns>
                 <TableColumn fx:id="tableColumnFirstName" prefWidth="75.0" text="First Name" />
                 <TableColumn fx:id="tableColumnLastName" prefWidth="75.0" text="Last Name" />
@@ -20,10 +20,10 @@
             </TableView>
             <AnchorPane prefHeight="211.0" prefWidth="600.0">
                <children>
-                  <Button alignment="TOP_LEFT" layoutX="300.0" layoutY="-1.0" mnemonicParsing="false" onAction="#addFriend" text="Add" AnchorPane.leftAnchor="300.0" />
-                  <Button layoutX="478.8" layoutY="-1.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" AnchorPane.rightAnchor="70.0" />
-                  <TextField fx:id="nameTextField" layoutX="83.0" AnchorPane.leftAnchor="83.0" />
-                  <Label alignment="CENTER" layoutX="5.0" layoutY="3.0" prefHeight="18.0" prefWidth="80.0" text="Last Name:" AnchorPane.leftAnchor="5.0" />
+                  <Button alignment="TOP_LEFT" layoutX="349.0" layoutY="-1.0" mnemonicParsing="false" onAction="#addFriend" text="Add" AnchorPane.leftAnchor="349.0" />
+                  <Button layoutX="480.0" layoutY="-1.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" AnchorPane.rightAnchor="35.200000000000045" />
+                  <TextField fx:id="nameTextField" layoutX="124.0" layoutY="3.0" prefHeight="33.0" prefWidth="181.0" AnchorPane.leftAnchor="124.0" />
+                  <Label alignment="CENTER" layoutX="15.0" layoutY="-3.0" prefHeight="46.0" prefWidth="98.0" text="Last Name:" AnchorPane.leftAnchor="15.0" />
                </children>
             </AnchorPane>
          </children>

@@ -7,10 +7,12 @@ import java.util.Objects;
 public class User extends Entity<Long>{
     private String firstName;
     private String lastName;
+    private String imageUrl;
 
     public User(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.imageUrl = "../../../../images/DefaultImage.png";
     }
 
     /**
@@ -43,6 +45,14 @@ public class User extends Entity<Long>{
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override

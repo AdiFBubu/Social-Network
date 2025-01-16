@@ -208,6 +208,7 @@ public class UserController implements Observer<EntityChangeEvent> {
     @Override
     public void update(EntityChangeEvent event) {
         if (event.getType() == ChangeEventType.FRIEND) {
+            currentPage = 0;
             initModelPage();
         }
         if (event.getType() == ChangeEventType.FRIEND_REQUEST) {
@@ -228,7 +229,6 @@ public class UserController implements Observer<EntityChangeEvent> {
     public void handleDeleteFriend(ActionEvent actionEvent) {
         User user = tableView.getSelectionModel().getSelectedItem();
         if (user != null) {
-            currentPage = 0;
             Optional<Friendship> deleted = socialNetwork.delete(this.user.getFirstName(), this.user.getLastName(), user.getFirstName(), user.getLastName());
             MessageAlert.showMessage(null, Alert.AlertType.INFORMATION, "Delete Friendship", "Friendship has been removed!");
         }
@@ -288,7 +288,7 @@ public class UserController implements Observer<EntityChangeEvent> {
 
     }
 
-    private void openChatWindow(User selectedFriend) {
+    public void openChatWindow(User selectedFriend) {
         executorService.execute(() -> {
             try {
                 FXMLLoader loader = new FXMLLoader();
@@ -360,5 +360,43 @@ public class UserController implements Observer<EntityChangeEvent> {
     public void onPreviousPage(ActionEvent actionEvent) {
         currentPage --;
         initModelPage();
+    }
+
+    public void handleProfile(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("../views/profile-view.fxml"));
+
+        try {
+            AnchorPane root = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Profile");
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+            ProfileController controller = loader.getController();
+            controller.setService(socialNetwork, this, user, user);
+            dialogStage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleAllUsers(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("../views/all-users-view.fxml"));
+
+        try {
+            AnchorPane root = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("All users");
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+            AllUsersController controller = loader.getController();
+            controller.setService(socialNetwork, this, user);
+            dialogStage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

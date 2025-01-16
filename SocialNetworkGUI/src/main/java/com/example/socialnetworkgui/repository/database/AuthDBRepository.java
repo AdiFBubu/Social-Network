@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.mindrot.jbcrypt.BCrypt;
+
+
 public class AuthDBRepository implements Repository<Long, Account> {
 
     private final String url;
@@ -76,9 +79,11 @@ public class AuthDBRepository implements Repository<Long, Account> {
 
             validator.validate(entity);
 
+            String hashedPassword = BCrypt.hashpw(entity.getPassword(), BCrypt.gensalt(12));
+
             statementAdd.setLong(1, entity.getId());
             statementAdd.setString(2, entity.getEmail());
-            statementAdd.setString(3, entity.getPassword());
+            statementAdd.setString(3, hashedPassword);
             statementAdd.executeUpdate();
 
             return Optional.empty();
@@ -118,8 +123,10 @@ public class AuthDBRepository implements Repository<Long, Account> {
 
             validator.validate(entity);
 
+            String hashedPassword = BCrypt.hashpw(entity.getPassword(), BCrypt.gensalt(12));
+
             statement.setString(1, entity.getEmail());
-            statement.setString(2, entity.getPassword());
+            statement.setString(2, hashedPassword);
             statement.setLong(3, entity.getId());
 
             int rez = statement.executeUpdate();

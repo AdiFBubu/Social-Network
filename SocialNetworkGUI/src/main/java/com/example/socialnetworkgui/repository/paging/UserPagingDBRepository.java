@@ -36,7 +36,9 @@ public class UserPagingDBRepository implements UserPagingRepository {
                 Long id = resultSet.getLong("id");
                 String firstName = resultSet.getString("first_name");
                 String lastName = resultSet.getString("last_name");
+                String urlImage = resultSet.getString("image_url");
                 User user = new User(firstName, lastName);
+                user.setImageUrl(urlImage);
                 user.setId(id);
                 return Optional.of(user);
             }
@@ -58,7 +60,9 @@ public class UserPagingDBRepository implements UserPagingRepository {
                 Long id = resultSet.getLong("id");
                 String firstName = resultSet.getString("first_name");
                 String lastName = resultSet.getString("last_name");
+                String urlImage = resultSet.getString("image_url");
                 User user = new User(firstName, lastName);
+                user.setImageUrl(urlImage);
                 user.setId(id);
                 users.add(user);
             }
@@ -73,7 +77,7 @@ public class UserPagingDBRepository implements UserPagingRepository {
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statementFind = connection.prepareStatement("Select * FROM users WHERE first_name = ? AND last_name = ?");
-             PreparedStatement statementAdd = connection.prepareStatement("INSERT INTO users (first_name, last_name) VALUES (?, ?) RETURNING id")) {
+             PreparedStatement statementAdd = connection.prepareStatement("INSERT INTO users (first_name, last_name, image_url) VALUES (?, ?, ?) RETURNING id")) {
 
             statementFind.setString(1, entity.getFirstName());
             statementFind.setString(2, entity.getLastName());
@@ -85,6 +89,7 @@ public class UserPagingDBRepository implements UserPagingRepository {
 
             statementAdd.setString(1, entity.getFirstName());
             statementAdd.setString(2, entity.getLastName());
+            statementAdd.setString(3, entity.getImageUrl());
             ResultSet resultSet =  statementAdd.executeQuery();
             if (!resultSet.next())
                 return Optional.empty();
@@ -124,13 +129,14 @@ public class UserPagingDBRepository implements UserPagingRepository {
     public Optional<User> update(User entity) {
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement("UPDATE users SET \"first_name\" = ?, \"last_name\" = ? WHERE id = ? RETURNING id")) {
+             PreparedStatement statement = connection.prepareStatement("UPDATE users SET \"first_name\" = ?, \"last_name\" = ?, \"image_url\" = ? WHERE id = ? RETURNING id")) {
 
             validator.validate(entity);
 
             statement.setString(1, entity.getFirstName());
             statement.setString(2, entity.getLastName());
-            statement.setLong(3, entity.getId());
+            statement.setString(3, entity.getImageUrl());
+            statement.setLong(4, entity.getId());
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -165,7 +171,9 @@ public class UserPagingDBRepository implements UserPagingRepository {
                     Long id = resultSet.getLong("id");
                     String firstName = resultSet.getString("first_name");
                     String lastName = resultSet.getString("last_name");
+                    String imageUrl = resultSet.getString("image_url");
                     User user = new User(firstName, lastName);
+                    user.setImageUrl(imageUrl);
                     user.setId(id);
                     usersOnPage.add(user);
                 }

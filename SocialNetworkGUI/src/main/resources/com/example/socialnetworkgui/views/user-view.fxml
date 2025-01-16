@@ -3,13 +3,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetworkgui.controller.UserController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../../../../css/user-view.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.socialnetworkgui.controller.UserController">
    <children>
-      <SplitPane dividerPositions="0.5" layoutX="301.0" layoutY="24.0" prefHeight="232.0" prefWidth="311.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+      <SplitPane dividerPositions="0.5384358288770053" layoutX="301.0" layoutY="24.0" prefHeight="232.0" prefWidth="311.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
          <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <TableView fx:id="tableView" layoutY="48.0" prefHeight="273.0" prefWidth="296.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="48.0">
+                  <TableView fx:id="tableView" layoutY="48.0" prefHeight="273.0" prefWidth="308.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="48.0">
                     <columns>
                       <TableColumn fx:id="tableColumnFirstName" prefWidth="318.0" text="First Name" />
                       <TableColumn fx:id="tableColumnLastName" minWidth="0.0" prefWidth="281.0" text="Last Name" />
@@ -18,26 +18,28 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </TableView>
-                  <Label layoutX="46.0" layoutY="3.0" text="First name" />
-                  <Label layoutX="199.0" layoutY="3.0" text="Last name" />
-                  <TextField fx:id = "textFieldFirstName" layoutX="33.0" layoutY="21.0" prefHeight="18.0" prefWidth="82.0" />
-                  <TextField fx:id = "textFieldLastName" layoutX="178.0" layoutY="21.0" prefHeight="18.0" prefWidth="95.0" />
-                  <Button fx:id = "previousButton" onAction="#onPreviousPage" layoutX="14.0" layoutY="321.0" mnemonicParsing="false" text="Previous" />
-                  <Button fx:id = "nextButton" onAction="#onNextPage" layoutX="239.0" layoutY="321.0" mnemonicParsing="false" text="Next" />
-                  <Label fx:id = "labelPage" layoutX="136.0" layoutY="325.0" text="Label" />
+                  <Label layoutX="48.0" layoutY="-6.0" text="First name" />
+                  <Label layoutX="207.0" layoutY="-6.0" text="Last name" />
+                  <TextField fx:id="textFieldFirstName" layoutX="38.0" layoutY="17.0" prefHeight="18.0" prefWidth="91.0" />
+                  <TextField fx:id="textFieldLastName" layoutX="193.0" layoutY="17.0" prefHeight="18.0" prefWidth="95.0" />
+                  <Button fx:id="previousButton" layoutX="11.0" layoutY="325.0" mnemonicParsing="false" onAction="#onPreviousPage" text="Previous" />
+                  <Button fx:id="nextButton" layoutX="236.0" layoutY="325.0" mnemonicParsing="false" onAction="#onNextPage" text="Next" />
+                  <Label fx:id="labelPage" layoutX="136.0" layoutY="325.0" text="Label" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Button layoutX="103.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleAddFriend" text="Add Friend" />
-                  <Button layoutX="97.0" layoutY="86.0" mnemonicParsing="false" onAction="#handleDeleteFriend" text="Delete Friend" />
-                  <Button layoutX="99.0" layoutY="141.0" mnemonicParsing="false" onAction="#handleUpdateUser" text="Update User" />
-                  <Button layoutX="92.0" layoutY="193.0" mnemonicParsing="false" onAction="#handleFriendRequests" text="Friend Request" />
-                  <Button layoutX="67.0" layoutY="243.0" mnemonicParsing="false" onAction="#handleMultipleMessages" text="Send multiple Messages" />
+                  <Button layoutX="92.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleAddFriend" text="Add Friend" />
+                  <Button layoutX="84.0" layoutY="71.0" mnemonicParsing="false" onAction="#handleDeleteFriend" text="Delete Friend" />
+                  <Button layoutX="87.0" layoutY="123.0" mnemonicParsing="false" onAction="#handleUpdateUser" text="Update User" />
+                  <Button layoutX="79.0" layoutY="175.0" mnemonicParsing="false" onAction="#handleFriendRequests" text="Friend Request" />
+                  <Button layoutX="49.0" layoutY="226.0" mnemonicParsing="false" onAction="#handleMultipleMessages" text="Send multiple Messages" />
+                  <Button layoutX="106.0" layoutY="275.0" mnemonicParsing="false" onAction="#handleProfile" text="Profile" />
+                  <Button layoutX="99.0" layoutY="321.0" mnemonicParsing="false" onAction="#handleAllUsers" text="All Users" />
                </children>
             </AnchorPane>
          </items>
       </SplitPane>
-      <Label fx:id="nameLabel" layoutX="14.0" prefHeight="32.0" prefWidth="168.0" text="Label" />
+      <Label fx:id="nameLabel" layoutX="261.0" layoutY="-2.0" prefHeight="32.0" prefWidth="78.0" text="Main Page" />
    </children>
 </AnchorPane>

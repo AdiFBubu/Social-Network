@@ -225,14 +225,14 @@ public class FriendshipPagingDBRepository implements FriendshipPagingRepository 
             conditions.add("\"state\" = ?");
             params.add(stateFilter);
         });
-        filter.getFirstName().ifPresent(firstNameFilter -> {
-            conditions.add("first_name LIKE ?");
-            params.add("%" + firstNameFilter + "%");
-        });
-        filter.getLastName().ifPresent(lastNameFilter -> {
-            conditions.add("last_name LIKE ?");
-            params.add("%" + lastNameFilter + "%");
-        });
+//        filter.getFirstName().ifPresent(firstNameFilter -> {
+//            conditions.add("first_name LIKE ?");
+//            params.add("%" + firstNameFilter + "%");
+//        });
+//        filter.getLastName().ifPresent(lastNameFilter -> {
+//            conditions.add("last_name LIKE ?");
+//            params.add("%" + lastNameFilter + "%");
+//        });
         String sql = String.join(" AND ", conditions);
         return new Pair<>(sql, params);
     }
